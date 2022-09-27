@@ -118,3 +118,146 @@ In this section, we will cover the following topics:
 -   Interface Builder
     
 -   Developing a Very Basic App
+
+## Basic programming
+
+### Intro
+
+### Command Line & Print
+Create new project
+![](assets/Pasted%20image%2020220927192924.png)
+![](assets/Pasted%20image%2020220927193021.png)
+![](assets/Pasted%20image%2020220927193140.png)
+
+
+### Comments
+Create new command line tools
+
+Using // or `/**/`
+
+### Basic Variables
+https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Strings/Articles/FormatStrings.html#//apple_ref/doc/uid/20000943-CJBEAEHH
+
+Int, float, char, bool
+![](assets/Pasted%20image%2020220927193632.png)
+
+https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Strings/Articles/formatSpecifiers.html#//apple_ref/doc/uid/TP40004265-SW2
+
+
+```objectivec
+int myInt = 3;
+float myFloat = 3.3;
+BOOL myBool = true;
+char my Char = 'c';
+NSLog(@"Integer is: %i", myInt);
+NSLOg (@"Float is: %f", myFloat);
+NSLog (@"Int is: %i and Float is: %f", myInt, my Float) ;
+NSLog(@"Character is: %c", myChar);
+NSLog(@"Bool is: %hhd", myBool)
+```
+
+### String
+
+```objectivec
+int myInt = 32;
+NSString* myString = @"A string of characters" ;|
+myString = @"Hello";
+NSLog("Hello World" ) ;
+```
+
+Using function
+![](assets/Pasted%20image%2020220927194536.png)
+
+Or you can print
+```
+NSLOG((@"%@", myStr);
+
+```
+
+Asterisk mask is a pointer
+
+
+### Append Strings Exercise
+![](assets/Pasted%20image%2020220927195024.png)
+![](assets/Pasted%20image%2020220927195347.png)
+
+### Variables In iOS
+Create ios app with label
+![](assets/Pasted%20image%2020220927195545.png)
+
+![](assets/Pasted%20image%2020220927195704.png)
+
+
+
+### If Else
+Create macOS command tool
+![](assets/Pasted%20image%2020220927195917.png)
+
+Cannot compare string by == operator
+
+
+### Operator
+
+Compare 2 strings: need to check type of the second params
+
+```
+if ([category isEqualToString:@"Some String"])
+{
+    // Do stuff...
+}
+```
+
+### Arrays and Sets
+![](assets/Pasted%20image%2020220927200821.png)
+![](assets/Pasted%20image%2020220927200915.png)
+5 objects
+
+The same output:
+
+```
+NSLog(@ "Object at index 2 is: 60", [daysArr objectAtIndex:21);
+NSLog (@"There are %lu objects in my array", daysArr.count):
+[daysArr add0bject :@"Friday " ] ;
+NSLog ("There are %lu objects in my array", [daysArr count]);
+```
+https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/FoundationTypesandCollections/FoundationTypesandCollections.html
+
+![](assets/Pasted%20image%2020220927201822.png)
+
+```
+[daysArr add0bject : @" Friday " 1;
+[daysArr remove0bject : @"Friday"li
+[daysArr remove0bjectAtIndex: 0];
+```
+
+![](assets/Pasted%20image%2020220927202148.png)
+
+### Dictionaries
+
+### For Loops
+
+### Occurance of X Exercise
+
+### Compare Arrays Assignment
+
+### Switch
+
+### While Loops
+
+### Jump Statement
+
+### Functions
+
+### Preview
+
+### Unique Words Assignment
+
+### Most Photos Assignment
+
+### Ordered Names Assignment
+
+### Available People Assignment
+
+### Basic Programming Recap
+
+### Basic Programming Quiz
