@@ -2048,3 +2048,836 @@ We no longer have a .h and .m file. Everything is in one place
 
 ### Swift Quiz
 
+## Further programming 
+
+### OOP
+![](assets/Pasted%20image%2020220928215743.png)
+
+
+
+### Classes in Swift
+
+```swift
+import Foundation
+
+class Translate
+{
+    var language : String!
+    init(inpLanguage : String)
+    {
+        self.language = inpLanguage
+    }
+    
+    func translate(inpWord: String) // hello
+    {
+        if (language == "German")
+        {
+            print("Hello in German is Hallo")
+        }
+        else
+        {
+            print("Hello in French is Bonjour")
+        }
+    }
+}
+var myFrench = Translate (inpLanguage: "French")
+myFrench.translate(inpWord: "Hello")
+
+
+
+
+
+
+
+
+
+class User  {
+    var name: String!
+    var photoName: String?
+    var uid: String!
+    var height: Int!
+    
+    init(inpName: String, inpPhotoName: String?, inpHeight: Int) {
+        self.name = inpName
+        if let inpPhotoName = inpPhotoName
+        {
+            self.photoName = inpPhotoName
+        }
+        self.height = inpHeight
+        self.uid = UUID().uuidString
+    }
+}
+
+// an instance
+var amirUser : User = User(inpName: "Amir",
+                           inpPhotoName: nil,
+                           inpHeight: 180)
+
+print ("UID is: \(amirUser.uid!)")
+
+
+```
+
+### Classes obj C
+
+```objectivec
+#import <Foundation/Foundation.h>
+
+@interface Car : NSObject
+
+@property NSString *name;
+@property Boolean isOn;
+
+- (void)turnEngineOn;
+- (instancetype) initWithState : (Boolean) starState;
+@end
+
+@implementation Car
+- (void)turnEngineOn
+{
+    _isOn = true;
+}
+- (instancetype) initWithState : (Boolean) starState
+{
+    self = [super init];
+    _isOn = starState;
+    return self;
+}
+@end
+
+
+int main(int argc, const char * argv[])
+{
+    @autoreleasepool
+    {
+        Car *jeep = [[Car alloc] init];
+        Car *corolla = [[Car alloc] initWithState: true];
+    }
+    return 0;
+}
+
+```
+
+### Array of Users Exercise
+
+```swift
+import Foundation
+
+// for user named Amir, find their height
+func searchFor(searchName: String)
+{
+    for anyUser: User in populateUsers()
+    {
+        if ( anyUser.name.lowercased() == searchName.lowercased() )
+        {
+            print("\(searchName)'s height is: \(anyUser.height!)")
+            break;
+        }
+    }
+}
+
+searchFor(searchName: "sarah")
+
+```
+
+
+```swift
+import Foundation
+
+func populateUsers () -> Array <User>
+{
+    var usersArr = Array <User>()
+    
+    let user_1 = User(inpName: "Amir", inpLastName: "J",
+                      inpHeight: 180,
+                      inpEyeColor: "Pink",
+                      inpActive: true)
+    usersArr.append (user_1)
+    
+    let user_2 = User(inpName: "Sarah", inpLastName: "Anderson",
+                      inpHeight: 190,
+                      inpEyeColor: "Purple",
+                      inpActive: true)
+    usersArr.append (user_2)
+    
+    let user_3 = User(inpName: "Steve", inpLastName: "Adams",
+                      inpHeight: 168,
+                      inpEyeColor: "green",
+                      inpActive: false)
+    usersArr.append (user_3)
+    
+    return usersArr
+}
+
+```
+
+```swift
+import Foundation
+
+class User
+{
+    var name: String!
+    var lastName: String!
+    var height: Int!
+    var eyeColor: String!
+    var active: Bool!
+    
+    init(inpName: String,
+         inpLastName: String,
+         inpHeight: Int,
+         inpEyeColor:String,
+         inpActive: Bool)
+    {
+        self.name = inpName
+        self.lastName = inpLastName
+        self.height = inpHeight
+        self.eyeColor = inpEyeColor
+        self.active = inpActive
+    }
+}
+
+```
+
+
+### Array of Users - ObjC Assignment
+
+```objectivec
+
+```
+
+### Initialization
+
+```swift
+import Foundation
+
+class User
+{
+    let email : String // not optional, constant but can be set at init
+    var name : String // is not optional
+
+    var rate : Float = 0.0 // is set at default
+    
+    var uid : String! // which will be set real soon
+    var photo : String? // optional
+    
+    
+    // designated inits
+    init(inpName : String, inpEmail : String)
+    {
+        self.email = inpEmail
+        self.name = inpName
+    }
+    
+    // designated inits
+    init(inpName : String, inpEmail : String, inpPhoto : String)
+    {
+        self.email = inpEmail
+        self.name = inpName
+        self.photo = inpPhoto
+    }
+}
+
+var myUser = User (inpName: "", inpEmail: "")
+
+```
+
+### Guard
+![](assets/Pasted%20image%2020220928230439.png)
+
+
+```swift
+import Foundation
+
+var optional_1 : String? = "Hello"
+var optional_2 : String? = "World"
+var optional_3 : String? = "of iOS"
+
+func myGuard ()
+{
+    guard
+        let op_1 = optional_1 as? String,
+        let op_2 = optional_2 as? String,
+        let op_3 = optional_3 as? String
+        else
+    {
+        return
+    }
+
+    print ("\(op_1) \(op_2) \(op_3)")
+}
+
+
+```
+
+### Convenience Initialization
+
+```swift
+import Foundation
+
+class User
+{
+    var name: String!
+    var uid: String!
+
+    init (inpName : String, inpUid: String)
+    {
+        self.name = inpName
+        self.uid = inpUid
+    }
+    
+    // a failable init
+    convenience init? ( inpDict : Dictionary <String, Any> )
+    {
+        guard
+            let readName = inpDict["nameKey"] as? String,
+            let readUid = inpDict["uidKey"] as? String
+            else
+        {
+            return nil
+        }
+        
+        self.init(inpName: readName, inpUid: readUid)
+    }
+}
+
+// this came from backend
+var userDict = ["nameKey" : "Amir", "uidKey" : "ksdrvlsblbslkbjs"]
+
+var myUser = User (inpDict: userDict)
+
+```
+
+### Inheritence
+
+```swift
+import Foundation
+
+class Vehicle {
+    var tires: Int!
+    
+    init(inpTires: Int) {
+        self.tires = inpTires
+    }
+    func carryWeight( inpWeight: Int) -> Bool {
+        return false
+    }
+}
+
+class Sedan: Vehicle {
+    var sunroof: Bool!
+    
+    override func carryWeight( inpWeight: Int) -> Bool {
+        if ( inpWeight < 2000 ) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    override init(inpTires: Int) {
+        super.init(inpTires: inpTires)
+        sunroof = false
+    }
+    
+    init (inpSunroof: Bool) {
+        super.init(inpTires: 4)
+        self.sunroof = inpSunroof
+    }
+}
+
+var fordFusion = Sedan (inpSunroof: true)
+
+```
+
+### Enumerations
+
+```swift
+import Foundation
+
+// Sale, Rent
+
+enum PropType {
+    case Sale
+    case Rent
+}
+
+class Property {
+    var address: String!
+    var type: PropType!
+    
+    init(inpAddress: String, inpType: PropType) {
+        self.address = inpAddress
+        self.type = inpType
+    }
+}
+
+var thisProperty = Property (inpAddress: "3rd St",
+                             inpType: PropType.Rent)
+
+if (thisProperty.type == PropType.Sale)
+{
+    // display this
+}
+
+enum Cities : CaseIterable {
+    case Vancouver, SanFran, NY
+}
+
+for city in Cities.allCases
+{
+    print(city)
+}
+
+```
+
+### Struct
+
+```swift
+import Foundation
+
+// 1 -> Structs cannot have inheritance
+// 2 -> Structs pass the value, while classes pass the pointer
+// Structs are a lot faster
+
+// Use structs unless you need classes
+
+struct User {
+    var name: String!
+    var uid: String!
+    
+    init(inpName: String, inpUid: String) {
+        self.name = inpName
+        self.uid = inpUid
+    }
+}
+
+
+```
+
+### Selectors & Class Type ObjC
+
+![](assets/Pasted%20image%2020220928232637.png)
+
+Person
+
+```objectivec
+#import <Foundation/Foundation.h>
+
+@interface Person : NSObject
+
+- (void)locate;
+- (void)eat;
+@end
+
+```
+
+```objectivec
+#import "Person.h"
+
+@implementation Person
+
+- (void)locate
+{
+    
+}
+- (void)eat
+{
+    
+}
+@end
+
+```
+
+
+main
+
+```objectivec
+#import <Foundation/Foundation.h>
+#import "Car.h"
+#import "Building.h"
+#import "Person.h"
+
+int main(int argc, const char * argv[])
+{
+    @autoreleasepool
+    {
+        Car *jeep = [Car new];
+        Person *amir = [Person new];
+        Building *empire = [Building new];
+        
+        NSMutableArray *myArr = [[NSMutableArray alloc] initWithObjects:
+                                 jeep,
+                                 amir,
+                                 empire, nil];
+        
+        for (int i = 0; i < myArr.count ; i++)
+        {
+            if ( [myArr[i] respondsToSelector: @selector(eat)])
+            {
+                // then eat
+            }
+        }
+
+        for (id each in myArr)
+        {
+            if ( [each isKindOfClass: [Building class]])
+            {
+                // building turn lights on
+            }
+        }
+
+        
+    }
+    return 0;
+}
+
+```
+
+### Selectors & Class Type Swift Assignment
+
+### Protocols
+
+
+```swift
+import Foundation
+
+// Property, Agent, User
+
+protocol Admissible {
+    var active : Bool { get set }
+    var uid: String { set get }
+    var rate: Float { get }
+    func rateIt (inpRate: Float)
+}
+
+class Propety : Admissible {
+    var active: Bool
+    var uid: String
+    var rate: Float
+    
+    init(inpActive: Bool) {
+        active = inpActive
+        uid = UUID().uuidString
+        rate = 0.0
+    }
+    
+    func rateIt(inpRate: Float) {
+        
+    }
+}
+
+```
+
+Class conforms to the prototype
+
+
+
+### Delegation Pattern
+
+
+```swift
+import Foundation
+
+class User  {
+    var name: String!
+    var delegate : sendingMessageDelegate!
+    
+    init(inpName: String)
+    {
+        self.name = inpName
+    }
+}
+
+```
+
+```swift
+import Foundation
+
+class Friend : sendingMessageDelegate
+{
+    func sendMessage(message: String) {
+        print ("\(name!) has received: \(message)")
+    }
+    
+    var name: String!
+    
+    init(inpName: String)
+    {
+        self.name = inpName
+    }
+}
+
+```
+
+```swift
+import Foundation
+
+protocol sendingMessageDelegate
+{
+    func sendMessage (message: String)
+}
+
+```
+
+```swift
+import Foundation
+
+var jack = Friend (inpName: "Jack")
+var myUser = User (inpName: "Amir")
+
+myUser.delegate = jack
+myUser.delegate.sendMessage(message: "Hi from \(myUser.name!)")
+
+```
+
+
+
+### Delegation in iOS
+![](assets/Pasted%20image%2020220929000609.png)
+
+```swift
+import Foundation
+
+
+protocol sendingMessageDelegate
+{
+    func send (message: String)
+}
+
+```
+
+viewController
+
+```swift
+import UIKit
+
+class ViewController: UIViewController, sendingMessageDelegate
+{
+    func send(message: String)
+    {
+        receivedMessageLabel.text = message
+    }
+    
+    @IBOutlet weak var receivedMessageLabel: UILabel!
+    @IBAction func gotoGreenAction(_ sender: Any)
+    {
+        self.performSegue(withIdentifier: "greenSegueId",
+                          sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue,
+                          sender: Any?)
+    {
+        let greenInstance = segue.destination as! GreenViewController
+        greenInstance.delegate = self
+    }
+}
+
+```
+
+```swift
+import UIKit
+
+class GreenViewController: UIViewController
+{
+    var delegate: sendingMessageDelegate!
+    
+    @IBOutlet weak var messageTxtFld: UITextField!
+    
+    @IBAction func goBackAction(_ sender: Any)
+    {
+        let textToSend = messageTxtFld.text!
+        // we have to do somethign
+        
+        delegate.send(message: textToSend)
+        
+        self.dismiss(animated: true,
+                     completion: nil)
+    }
+}
+
+```
+
+### Delegation with ObjC
+
+protocol.h
+
+```objectivec
+#import <Foundation/Foundation.h>
+
+@protocol sendingMessageProtocol <NSObject>
+
+- (void) send : (NSString *)message;
+
+@end
+
+```
+
+ViewController
+
+```objectivec
+#import <UIKit/UIKit.h>
+#import "Protocol.h"
+
+@interface ViewController : UIViewController <sendingMessageProtocol>
+{
+    IBOutlet UILabel *receiveMessageLabel;
+}
+
+
+-(IBAction)gotoGreenAction:(id)sender;
+
+@end
+
+
+```
+
+```objectivec
+#import "ViewController.h"
+#import "GreenViewController.h"
+
+@implementation ViewController
+
+- (void) send : (NSString *)message
+{
+    receiveMessageLabel.text = message;
+}
+
+-(IBAction)gotoGreenAction:(id)sender
+{
+    [self performSegueWithIdentifier:@"greenSegueId" sender:nil];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    GreenViewController *greenInstance = [segue destinationViewController];
+    greenInstance.delegate = self;
+    
+}
+
+@end
+
+```
+
+GreenViewController
+
+```objectivec
+#import <UIKit/UIKit.h>
+#import "Protocol.h"
+
+@interface GreenViewController : UIViewController
+{
+    IBOutlet UITextField *sendTxtFld;
+}
+
+@property (nonatomic) id <sendingMessageProtocol> delegate;
+
+-(IBAction)gotoBackAction:(id)sender;
+
+@end
+
+
+
+```
+
+```objectivec
+#import "GreenViewController.h"
+
+@implementation GreenViewController
+
+-(IBAction)gotoBackAction:(id)sender
+{
+    NSString *textToSend = sendTxtFld.text;
+    [self.delegate send: textToSend];
+    
+    [self dismissViewControllerAnimated:true
+                             completion:nil];
+}
+@end
+
+```
+
+### Text Field Delegation in iOS
+
+drag text fields => select delegate
+![](assets/Pasted%20image%2020220929002512.png)
+![](assets/Pasted%20image%2020220929002543.png)
+
+or you can
+
+Search gg:UITextFieldDelegate
+Select return key
+![](assets/Pasted%20image%2020220929003015.png)
+show keyboard: command K
+![](assets/Pasted%20image%2020220929003252.png)
+
+![](assets/Pasted%20image%2020220929003651.png)
+
+```swift
+import UIKit
+
+class ViewController: UIViewController, UITextFieldDelegate
+{
+        @IBOutlet weak var myTxtFld: UITextField!
+    
+    
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        myTxtFld.delegate = self
+        myTxtFld.keyboardType = UIKeyboardType.numberPad
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+        textField.resignFirstResponder() // Get rid of the keyboard
+        return true
+    }
+
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool
+    {
+        let numbers = "0123456789"
+        let removeCharset = NSCharacterSet (charactersIn: numbers).inverted
+        
+        // divide
+        let separated = string.components(separatedBy: removeCharset)
+        
+        // join
+        let joined = separated.joined(separator: "")
+        
+        return ( string == joined )
+    }
+}
+
+
+```
+
+Only can input numbers
+![](assets/Pasted%20image%2020220929003914.png)
+
+### Text Field Delegation in ObjC Assignment
+
+### Categories
+
+### Class Extensions
+
+### Class Methods
+
+### Preview
+
+### Timer
+
+### Clousers & Completion Blocks
+
+### Getting Help
+
+### Vehicle Shop App Exercise
+
+### Vehicle Shop App in Objectice-C Assignment
+
+### Wrap Up
+
+### Further Programming Recap
