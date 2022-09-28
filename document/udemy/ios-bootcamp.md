@@ -1641,14 +1641,410 @@ var myNSArray : NSArray = NSArray.init(objects: "Hello", "World")
 
 ### Dictionaries in Swift
 
+playground
+
+```swift
+import Cocoa
+
+
+var dict : [String : String] = [:]
+
+var myDict : Dictionary <String, String> = ["nameKey" : "Amir",
+              "cityKey" : "Vancouver" ]
+
+for (key, val) in myDict
+{
+    print ("Key is: \(key)")
+    print ("Value is: \(val)")
+}
+
+// Tuples
+var user = (firstName: "Amir",
+            lastName: "J",
+            uid: "ksudgrsgiuer",
+            email: "amir@example.com")
+
+user.email
+
+
+```
+
 ### Functions in Swift
 
-### Preview
+commandline
+
+```swift
+import Foundation
+
+func funcOne (inpArg: Any) -> (String , String, Int)
+{
+    func nestedFunc ()
+    {
+        print ("This is printed form inside")
+    }
+    
+    nestedFunc()
+    
+    return ("" , "", 0)
+}
+
+
+funcOne (inpArg: "")
+
+```
+
+You can return -> Void
+
+![](assets/Pasted%20image%2020220928210931.png)
+![](assets/Pasted%20image%2020220928211243.png)
+
+
+
+### Swift in ios
+
+Create IOS app
+
+![](assets/Pasted%20image%2020220928212056.png)
+
+Create button and label
+
+```swift
+import UIKit
+class ViewController: UIViewController
+{
+    @IBOutlet weak var myButton: UIButton!
+    @IBOutlet weak var myLabel: UILabel!
+    @IBAction func myAction(_ sender: Any)
+    {
+        myLabel.backgroundColor = UIColor.orange
+        myLabel.textColor = UIColor.black
+        myLabel.textAlignment = NSTextAlignment.center
+        myLabel.font = UIFont.systemFont(ofSize: 26)
+        myLabel.text = "Hello Swift"
+    }
+    
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        myButton.backgroundColor = UIColor.darkGray
+        myButton.setTitleColor(UIColor.white,
+                               for: UIControl.State.normal)
+        myButton.setTitle("Hit Me",
+                          for: UIControl.State.normal)
+    }
+}
+
+
+```
 
 ### Random Image Picker Exercise
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    let imgArr : Array <UIImage> = [ UIImage(named: "birds.jpg")!,
+        UIImage(named: "cat.jpg")!, UIImage(named: "dog_img.jpg")!,
+        UIImage(named: "happy_lamb.jpg")!, UIImage(named: "road_image.jpg")!]
+    
+    var curImgArr : Array <UIImage> = []
+    
+    @IBOutlet weak var myImgViw: UIImageView!
+    
+    @IBAction func showRandomAction(_ sender: Any) {
+        if ( curImgArr.count == 0 ) {
+            curImgArr = imgArr
+        }
+        let randInd = Int ( arc4random() ) % curImgArr.count
+        myImgViw.image = curImgArr[randInd]
+        
+        curImgArr.remove(at: randInd)
+    }
+}
+
+
+```
+
+![](assets/Pasted%20image%2020220928213705.png)
+
+Select Content mode 
+![](assets/Pasted%20image%2020220928214038.png)
+
 
 ### Swift User Manager Assignment
 
 ### Swift Recap
 
+**04 - Swift Recap**
+
+In this section, we talked about Swift and got started with actually coding in Swift. In particular, we covered the following basic matters:
+
+  
+
+-   Swift Basics
+    
+-   Swift Playground
+    
+-   Swift Strings
+    
+-   Collections in Swift (Arrays and Dictionaries)
+    
+-   Functions in Swift
+    
+
+  
+
+**Playground**
+
+A playground is the learning environment of XCode for Swift. You could use it on both your Mac as well as on your iPad.
+
+  
+
+**Swift Variables**
+
+Next important topic is the variable in Swift. We have several different matters to keep in mind:
+
+-   Let for introducing immutable variables. Let example is Objective-C is NSArray
+    
+-   Var for introducing mutable variables. Var example is Objective-C is NSMutableArray
+    
+-   Type Annotations
+    
+-   In Swift, we could use the type annotations to explicitly define the type of a variable.
+    
+-   Writing comments are similar to those in Objective-C
+    
+-   Semicolons are not necessary for Swift.
+    
+-   String Interpolation print ("\(myFloat)")
+    
+
+  
+
+  
+
+**Swift Options**
+
+Swift options are a rather important topic.  If a variable is optional, it can be nil. Otherwise, it must have a value.
+
+-   var optionalString: String? // which can be nil
+    
+-   var nonOptionalString: String = "Hello" // Which Must have a value
+    
+-   var unWrappedString: String! // implicitly unwrapped optional. Implicitly unwrapped optionals are useful when an optional value is confirmed to exist. ! lets you treat the property as if it were non-optional
+    
+
+  
+
+You can do force unwrapping by ! . It's not the safest thing to do though
+
+1.   var n : Int?
+2.   print ("\(n!)")
+
+Conditional Unwrapping
+
+  
+
+1.   var someVar : Int?
+2.   if let val = someVar // you can also use the same name
+3.   {
+4.   print ("\(val)")
+5.   }
+6.   else
+7.   {
+8.   print ("nada");
+9.   }
+
+Type casting for unwrapping
+
+  
+
+1.   var someVal: Any? = 1
+2.   if someVal as? String != nil {
+3.   print("This is string")
+4.   }
+5.   if someVal as? Int != nil {
+6.   print("Int's Int")
+7.   }
+
+  
+
+  
+
+Link for further study: [https://docs.swift.org/swift-book/LanguageGuide/OptionalChaining.html](https://docs.swift.org/swift-book/LanguageGuide/OptionalChaining.html)
+
+  
+
+  
+
+  
+
+**Swift Control Flow**
+
+  
+
+**If Else**
+
+In an If Statement, we don't need the round brackets, but the curly brackets for the statement are necessary
+
+  
+
+1.  If n == true {
+
+3.  }
+
+  
+
+**Switch**
+
+The break statement inside a switch can be used when you don't need a case to have any actual functionality.
+
+  
+
+**for**
+
+In a for loop, you shouldn't use round brackets and the numbering is different. For an example
+
+  
+
+1.  for any in "Ding"
+2.  {
+3.  print ("\(any)")
+4.  }
+
+Repeat While and While are exactly identical to Do While and While
+
+  
+
+**Swift Strings**
+
+1.  let someString = "Some string literal value"
+2.  let multilineString = """
+3.  These are the same.
+4.  """
+5.  var variableString = "Horse"
+6.  variableString += " and carriage"
+7.  if quotation == sameQuotation {
+8.  	print("These two strings are considered equal")
+9.  }
+
+  
+
+Read further at:
+
+https://docs.swift.org/swift-book/LanguageGuide/StringsAndCharacters.html
+
+  
+
+**Swift Arrays**
+
+Arrays in swift are rather simplified
+
+```
+1.  var myArray : Array <String> = ["Hello", "World", "Swift", "iOS"]
+2.  print ("\(myArray)")
+3.  myArray.remove(at: 1)
+4.  print ("\(myArray)")
+5.  myArray.append("ObjC")
+6.  print ("\(myArray)")
+
+8.  You can use Any for arrays where the type is not predetermined
+
+10.   var myArray : Array <String> = ["Hello", "World", "Swift", "iOS"]
+11.   if let index = myArray.index(of: "Hello") {
+12.   print("Found Hello at index \(index)")
+13.   }
+
+```
+
+You can still use the NSArray if you prefer, but you cannot explicitly select its type
+
+  
+```
+var myNsArr : NSMutableArray = NSMutableArray.init(objects: "Hi", "World");
+
+myNsArr.index(of: "Hi")
+
+```
+
+
+**Swift Dictionaries**
+
+Dictionaries in Swift are rather simplified and powerful. We declare dictionaries by a var or let of the type dictionary and then we can explicitly mention the type of the values in that dictionary.
+
+  
+
+We could also let the types be inferred from the values.
+
+Once we have a dictionary, we can add new key-value pairs to it or update them.
+
+For iterating within a dictionary, we rely on tuples. Tuples are a powerful ordered set of values. The values can be accessed by index or by name.
+
+ ``` 
+
+1.  var person = ("John", "Smith")
+
+3.  var firstName = person.0 // John
+4.  var lastName = person.1 // Smith
+5.  var person2 = (firstName: "John", lastName: "Smith")
+6.  var firstName = person2.firstName // John
+7.  var lastName = person.1 // Smith
+
+9.  var namesOfIntegers = [Int: String]()
+10.  namesOfIntegers[16] = "sixteen"
+
+
+
+11. var airports: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+12. // Or
+13. var airports = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+
+14. airports["LHR"] = "London"
+
+15. for (airportCode, airportName) in airports 
+16. {
+17. print("\(airportCode): \(airportName)")
+18.  }
+
+```
+
+  
+
+**Swift Functions**
+
+Swift functions are written in a slightly different format than that of Objective-C.
+
+  
+```
+1.  func myFunc (inp: String) -> (name: String, res: Int)
+2.  {
+3.  	return ("Hello " + inp, 2)
+4.  }
+
+5.  myFunc (inp: "Amir")
+
+6.  We can also nest functions inside one another
+
+7.   func nestedFunc ()
+8.   {
+9.   	func internalFunc () -> String
+10.  	{
+11.      	return "yo"
+12.  	}
+13.  	print ( internalFunc() )
+14.  }
+15.  nestedFunc()
+```
+  
+
+**Swift in iOS**
+
+We no longer have a .h and .m file. Everything is in one place
+
+
+
+
+
 ### Swift Quiz
+
