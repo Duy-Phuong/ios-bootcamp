@@ -2862,22 +2862,1872 @@ Only can input numbers
 
 ### Categories
 
+create commandline with objectivec
+
+NSString+Reverser
+
+```objectivec
+#import "NSString+Reverser.h"
+
+@implementation NSString (Reverser)
+
+-(NSString *)reverseIt
+{
+    NSMutableString *res = [NSMutableString new];
+
+    NSInteger stringLength = [self length];
+    
+    while (stringLength > 0)
+    {
+        stringLength--;
+        NSRange substringRange = NSMakeRange(stringLength, 1);
+        NSString *prevChar = [self substringWithRange:substringRange];
+        [res appendString: prevChar];
+        NSLog(@"%@", res);
+    }
+    
+    return res;
+}
+@end
+
+
+```
+
+```objectivec
+#import <Foundation/Foundation.h>
+
+@interface NSString (Reverser)
+
+-(NSString *)reverseIt;
+
+@end
+
+```
+
+```objectivec
+#import <Foundation/Foundation.h>
+#import "NSString+Reverser.h"
+
+int main(int argc, const char * argv[])
+{
+    @autoreleasepool
+    {
+        NSString* helloStr = @"Hello, World!";
+        
+        NSString *reverseStr = [helloStr reverseIt];
+        
+        NSLog(@"\n\n\n\nRevsersed is: %@", reverseStr);
+
+    }
+    return 0;
+}
+
+```
+
 ### Class Extensions
+extensions cannot contains a property and extensions is used for calling a method from object
+
+```swift
+import Foundation
+
+extension String
+{
+    // numbers only
+    func numbersOnly() -> String
+    {
+        let numbers = "0123456789"
+        let removeCharset = NSCharacterSet (charactersIn: numbers).inverted
+        
+        let separated = self.components(separatedBy: removeCharset)
+        let joined = separated.joined(separator: "")
+        return joined
+    }
+}
+
+var myStr: String = "akhdbvluwh5489wyghlserhw9846yhjwbli560"
+print ("Numbers only is: \(myStr.numbersOnly())")
+
+```
+
 
 ### Class Methods
 
-### Preview
+static method
+
+```swift
+import Foundation
+
+class MyClass
+{
+    class func doSomething()  {
+        
+    }
+}
+
+
+MyClass.doSomething()
+
+```
+
+![](assets/Pasted%20image%2020220929083923.png)
+
+Change `-` to `+`
+
+```objectivec
+#import <Foundation/Foundation.h>
+
+@interface MyClass : NSObject
++ (void)doSomething;
+@end
+
+@implementation MyClass
++ (void)doSomething
+{
+    
+}
+@end
+
+int main(int argc, const char * argv[])
+{
+    @autoreleasepool
+    {
+        [MyClass doSomething];
+    }
+    return 0;
+}
+
+```
+
+### Reference counting
+new commandline tool
+
+read write
+```objectivec
+#import <Foundation/Foundation.h>
+
+
+@interface MyClass : NSObject
+// by default a variable will have these status: atomic, readwrite, strong
+@property (atomic, readwrite, strong) NSString *defaultString;
+@property NSString *autoDefaultString;
+
+
+@property (readwrite) NSString *readWriteString;
+@property (readonly) NSString *readOnlyString;
+@end
+
+
+@implementation MyClass
+@end
+
+int main(int argc, const char * argv[])
+{
+    @autoreleasepool
+    {
+        MyClass *myObj = [MyClass new];
+        myObj.readWriteString = @"Hllo";
+        myObj.readOnlyString = @"Hi";
+    }
+    return 0;
+}
+
+```
+
+![](assets/Pasted%20image%2020220929085203.png)
+
+Arc atomocity
+
+```objectivec
+#import <Foundation/Foundation.h>
+
+@interface MyClass : NSObject
+@property (atomic) NSString *atomicString; // default multi threaded, Locked
+@property (nonatomic) NSString *nonatomicString; // single threaded, unlocked
+@end
+@implementation MyClass
+@end
+
+int main(int argc, const char * argv[])
+{
+    @autoreleasepool
+    {
+        MyClass *myObj = [MyClass new];
+        myObj.atomicString = myObj.nonatomicString = @"Default";
+        
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            myObj.atomicString = myObj.nonatomicString = @"Second Value";
+        });
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            myObj.atomicString = myObj.nonatomicString = @"Third Value";
+        });
+        
+        NSLog(@"Atomic is: %@", myObj.atomicString);
+        NSLog(@"Non Atomic is: %@", myObj.nonatomicString);
+    }
+    return 0;
+}
+
+```
+
+Priorities are the same with BACKGROUND
+
+![](assets/Pasted%20image%2020220929091843.png)
+
+Change to HIGH
+![](assets/Pasted%20image%2020220929091915.png)
+
+Arc Copy vs Assign ObjC
+
+```objectivec
+#import <Foundation/Foundation.h>
+
+@interface MyClass : NSObject
+@property (copy) NSString *copiedString; // strong
+@property (assign) NSString *assignedString;  // weak
+@end
+@implementation MyClass
+@end
+
+int main(int argc, const char * argv[])
+{
+    @autoreleasepool
+    {
+        MyClass *myObj = [MyClass new];
+        
+        NSMutableString *val = [NSMutableString stringWithString: @"Default"];
+        myObj.copiedString = myObj.assignedString = val;
+        
+        [val appendString: @" and some new things"];
+        
+        
+        NSLog(@"Copied is: %@", myObj.copiedString);
+        NSLog(@"Assigned is: %@", myObj.assignedString);
+    }
+    return 0;
+}
+
+```
+
+![](assets/Pasted%20image%2020220929092342.png)
+
+Arc Strong Weak Swift
+
+```objectivec
+import Foundation
+
+class Comment {
+    var text = ""
+    weak var owner : User? // like assign, don't copy
+}
+
+class User {
+    var name = ""
+    var comment : Comment!
+    
+    init(inpName: String) {
+        self.name = inpName
+        self.comment = Comment ()
+    }
+}
+
+var myUser = User (inpName: "John")
+print("User's count is: \(CFGetRetainCount(myUser))")
+myUser.comment.owner = myUser
+print("User's count now is: \(CFGetRetainCount(myUser))")
+
+```
+
+Not add weak: more than one copy of user - pointer
+![](assets/Pasted%20image%2020220929093159.png)
+
+Add weak
+
+![](assets/Pasted%20image%2020220929093323.png)
+
+Arc iVars ObjC
+
+```objectivec
+#import <Foundation/Foundation.h>
+
+/*
+ atomic -> multi threaded, never nil, might be wrong
+ non atomic -> single threaded might be nil
+ 
+ assign -> points to a location in memory
+ copy -> copies the information for itself
+ 
+ weak -> weak link existing as long as some one has conenctions to it
+ strong -> strong like living for as long as the cycle lives
+ 
+ readonly, readWrite
+*/
+
+
+
+
+
+
+
+
+@interface User : NSObject
+@property NSString *someProperty; // @sysnthesize {setter and gett }
+@property NSString *manualProperty; // @sysnthesize {setter and gett }
+@end
+
+@implementation User
+
+-(void)setManualProperty:(NSString *)newValue
+{
+    // dom somethign before you assign
+    self.manualProperty = newValue;
+}
+
+-(NSString *)manualProperty
+{
+    return self.manualProperty;
+}
+
+
+
+-(void)someFunc
+{
+    _someProperty = @"Directly accessing the variable";
+    self.someProperty = @"Accessing valraiable through the setter";
+}
+
+@end
+
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // insert code here...
+        NSLog(@"Hello, World!");
+    }
+    return 0;
+}
+
+```
+
+
 
 ### Timer
+new playground
+
+```swift
+import Cocoa
+
+class MyClass {
+    var time : Float = 0.0
+    func runTimer ()  {
+        Timer.scheduledTimer(timeInterval: 0.01,
+                             target: self,
+                             selector: #selector (printTime),
+                             userInfo: nil,
+                             repeats: true)
+    }
+   
+    @objc func printTime () {
+        time += 0.01
+        print (String (format: "%.2f", time))
+    }
+}
+
+var myObj = MyClass ()
+myObj.runTimer()
+
+```
+
+![](assets/Pasted%20image%2020220929205634.png)
+![](assets/Pasted%20image%2020220929205751.png)
+
 
 ### Clousers & Completion Blocks
 
+Commandline
+
+```swift
+import Foundation
+
+
+func thisIsFunc () {
+    
+}
+
+var thisIsClosure = { () -> () in }
+
+var sayHiClosure = { (inpName: String) -> String in
+    return "Hi \(inpName)"
+}
+
+print ("\(sayHiClosure ("Amir"))")
+
+
+
+
+func multiPurFunc (vals: Array <Int>, closure : (Int) -> Bool) {
+    for eachNum in vals {
+        if ( closure (eachNum) ) {
+            print( "\(eachNum)")
+        }
+    }
+}
+
+multiPurFunc(vals: [100, 200, 700, 2, 3, 5]) { (val) -> Bool in
+    val >= 300
+}
+
+
+// escaping closure, Asynchronous
+
+typealias onlineClosure = (Bool, [String]?) -> Void
+
+func fetchPhotos (link: String,
+                  completion: @escaping onlineClosure)
+{
+    // it can be 0 or 1
+    let status = arc4random_uniform(2) == 0
+    if ( status )     {
+        completion (true, ["photo1", "photo2"])
+    }
+    else    {
+        completion (false, nil)
+    }
+}
+
+fetchPhotos(link: "Fake Link") { (res, photosArr) in
+    if ( res )    {
+        // use the photosArr
+    }
+    else {
+            print ("error in reading netowrk")
+    }
+}
+
+```
+
+@escaping: it will be called later
+
+Unlike here that whatever is happening in the vial and the Boolean or whatever the statement is, it
+
+must be returned.
+
+Right then an escaping closure essentially waits for it to be completed and then it gets returned,
+
 ### Getting Help
+![](assets/Pasted%20image%2020220929212324.png)
+
+
+Command and hover over fields
+
+```swift
+import Foundation
+
+print("Hello, World!")
+
+class TestClass
+{
+    func myFunc() -> String {
+        print ("Someting")
+        
+        return "Hi"
+    }
+}
+
+
+var myObj = TestClass ()
+
+
+```
 
 ### Vehicle Shop App Exercise
+
+Create cocoa touch class: Vehicle
+
+```swift
+import UIKit
+
+class Vehicle {
+    var name : String!
+    var color : UIColor!
+    var maxGear : Int!
+    var status : VehicleState!
+    
+    init(inpName: String,
+         inpColor: UIColor,
+         inpMaxear: Int,
+         inpStatus: VehicleState) {
+        self.name = inpName
+        self.color = inpColor
+        self.maxGear = inpMaxear
+        self.status = inpStatus
+    }
+    
+    
+}
+
+```
+
+create swift file enums
+
+```swift
+import Foundation
+
+enum VehicleState : Int, CaseIterable
+{ // Typed, Case Iteratble
+    case available = 0
+    case out = 1
+    case repairs = 2
+}
+
+```
+
+Create Cocoa touch class
+![](assets/Pasted%20image%2020220929213830.png)
+
+```swift
+import UIKit
+
+class Sedan: Vehicle {
+    var curGear : Int = 0
+
+    // init using a dict
+    
+    convenience init? (inpDict: Dictionary <String, Any>)    {
+        guard let name = inpDict ["nameKey"] as? String,
+        let gears = inpDict ["gearsKey"] as? Int,
+        let colorStr = inpDict ["colorKey"] as? String,
+        let statusStr = inpDict ["statusKey"] as? String
+        else        {
+            return nil
+        }
+        
+        var status = VehicleState.available
+        for anyCase in VehicleState.allCases        {
+            if ( statusStr == "\(anyCase)")            {
+                status = anyCase
+            }
+        }
+
+        self.init(inpName: name,
+                  inpColor: colorStr.color!,
+                  inpMaxear: gears,
+                  inpStatus: status)
+    }
+}
+
+```
+
+```swift
+import UIKit
+
+class Truck: Vehicle {
+
+}
+
+```
+
+create class Dummies
+
+```swift
+import Foundation
+import UIKit
+
+class Dummies {
+    
+    static var dummiesArr : Array <Vehicle>!
+    
+    class func populateArr () {
+        dummiesArr = Array <Vehicle> ()
+        
+        let veh_1 = Sedan (inpName: "Corolla",
+                           inpColor: UIColor.red,
+                           inpMaxear: 4,
+                           inpStatus: VehicleState.out)
+        
+        let veh_2 = Sedan (inpName: "Ford",
+                           inpColor: UIColor.blue,
+                           inpMaxear: 5,
+                           inpStatus: VehicleState.available)
+        
+        let veh_3 = Sedan (inpName: "Fiat",
+                           inpColor: UIColor.yellow,
+                           inpMaxear: 5,
+                           inpStatus: VehicleState.repairs)
+        
+        let veh_4 = Truck (inpName: "Dodge",
+                           inpColor: UIColor.cyan,
+                           inpMaxear: 4,
+                           inpStatus: VehicleState.available)
+        
+        
+        dummiesArr.append(veh_1)
+        dummiesArr.append(veh_2)
+        dummiesArr.append(veh_3)
+        dummiesArr.append(veh_4)
+    }
+}
+
+```
+
+ViewController
+
+```swift
+import UIKit
+
+class ViewController: UIViewController {
+
+    var curArr : Array <Vehicle>!
+    @IBOutlet weak var resTextView: UITextView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        Dummies.populateArr()
+    }
+    
+    @IBAction func gotoAddNew(_ sender: Any)
+    {
+        self.performSegue(withIdentifier: "toAddSegueId",
+                          sender: nil)
+    }
+    
+    
+}
+
+
+```
+
+![](assets/Pasted%20image%2020220929214441.png)
+
+Create extensions to show list vehicle
+
+ViewController+StatusAction
+
+```swift
+import Foundation
+import UIKit
+
+extension ViewController
+{
+    @IBAction func statusAction(_ sender: Any)
+    {
+        let ind = (sender as! UISegmentedControl).selectedSegmentIndex
+        
+        curArr = Array <Vehicle> ()
+        
+        switch ind
+        {
+        case 0: // avilable
+            for anyVeh in Dummies.dummiesArr
+            {
+                if (anyVeh.status == VehicleState.available)
+                {
+                    curArr.append(anyVeh)
+                }
+            }
+            showString (inpTitle: "Avialble", inpArr: curArr)
+        case 1: // out
+            for anyVeh in Dummies.dummiesArr
+            {
+                if (anyVeh.status == VehicleState.out)
+                {
+                    curArr.append(anyVeh)
+                }
+            }
+            showString (inpTitle: "Out", inpArr: curArr)
+        case 2: // repairs
+            for anyVeh in Dummies.dummiesArr
+            {
+                if (anyVeh.status == VehicleState.repairs)
+                {
+                    curArr.append(anyVeh)
+                }
+            }
+            showString (inpTitle: "Repairs", inpArr: curArr)
+        default:
+            break
+        }
+    }
+}
+
+```
+
+ViewController+TypeAction
+
+```swift
+import Foundation
+import UIKit
+
+extension ViewController
+{
+    @IBAction func typeAction(_ sender: Any)
+    {
+        curArr = Array <Vehicle> ()
+        
+        let ind = (sender as! UISegmentedControl).selectedSegmentIndex
+        
+        switch ind
+        {
+        case 0: // sedans
+            for anyVeh in Dummies.dummiesArr
+            {
+                if let thisSedan = anyVeh as? Sedan
+                {
+                    curArr.append(thisSedan)
+                }
+            }
+            showString (inpTitle: "Sedans", inpArr: curArr)
+        case 1: // trucks
+            for anyVeh in Dummies.dummiesArr
+            {
+                if let thisTruck = anyVeh as? Truck
+                {
+                    curArr.append(thisTruck)
+                }
+            }
+            showString (inpTitle: "Trucks", inpArr: curArr)
+        default:
+            break
+        }
+    }
+}
+
+```
+
+ShowString
+
+```swift
+import Foundation
+import UIKit
+extension ViewController
+{
+    func showString (inpTitle: String, inpArr: Array <Vehicle>)
+    {
+        var toShowString = inpTitle
+        toShowString.append("\n")
+        
+        for eachVehicle in inpArr
+        {
+            toShowString.append("\n\t")
+            toShowString.append(eachVehicle.name.uppercased())
+            toShowString.append("\n\t\t")
+            toShowString.append("Color: \(eachVehicle.color!.name!)")
+            toShowString.append("\n\t\t")
+            toShowString.append("Max Gear: \(String(eachVehicle.maxGear!))")
+            toShowString.append("\n\t\t")
+            toShowString.append("Status: \(eachVehicle.status!)")
+            toShowString.append("\n")
+        }
+        resTextView.text = toShowString
+    }
+}
+```
+
+![](assets/Pasted%20image%2020220929222437.png)
+
+Store value for changing status and type
+
+AddViewController+ChangeStatus
+
+```swift
+import Foundation
+import UIKit
+extension AddViewController
+{
+    @IBAction func changeStatus(_ sender: Any)
+    {
+        let selInd = (sender as! UISegmentedControl).selectedSegmentIndex
+        newVehDict["statusKey"] = "\( VehicleState(rawValue: selInd)! )"
+    }
+}
+
+```
+
+type
+```swift
+import Foundation
+import UIKit
+extension AddViewController
+{
+    @IBAction func changeType(_ sender: Any)
+    {
+        let selInd = (sender as! UISegmentedControl).selectedSegmentIndex
+        
+        switch selInd {
+        case 0:
+            selectedType = "Sedan"
+        case 1:
+            selectedType = "Truck"
+        default:
+            break
+        }
+    }
+}
+
+```
+
+Add
+
+```swift
+import Foundation
+import UIKit
+extension AddViewController
+{
+    @IBAction func addAction(_ sender: Any)
+    {
+        if ( !validate() )  {
+            return
+        }
+        var newVehicle : Vehicle!
+        if ( selectedType == "Sedan" )
+        {
+            newVehicle = Sedan (inpDict: newVehDict)
+            Dummies.dummiesArr.append( newVehicle!)
+        }
+        else if ( selectedType == "Truck")
+        {
+            
+        }
+        self.dismiss(animated: true, completion: nil)
+    }
+}
+
+```
+
+Validate
+```swift
+import Foundation
+import UIKit
+extension AddViewController
+{
+    func validate () -> Bool
+    {
+        if ( newVehDict.values.count < 4 || selectedType == nil)
+        {
+            warningLabel.isHidden = false
+            warningLabel.text = "All fields are mandatory"
+            return false
+        }
+        else
+        {
+            warningLabel.isHidden = true
+            return true
+        }
+    }
+}
+
+```
+
+AddViewcontroller
+
+add `nameTextField.delegate = self` and UITextFieldDelegate
+
+now we can use
+
+```swift
+import Foundation
+import UIKit
+extension AddViewController
+{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+        newVehDict["nameKey"] = textField.text!
+        textField.resignFirstResponder() // get rid of keyboard
+        return true
+    }
+}
+
+```
 
 ### Vehicle Shop App in Objectice-C Assignment
 
 ### Wrap Up
 
+
+```swift
+import Foundation
+
+// Variables Declarations
+// MARK: Variables
+
+
+
+// Delegates
+// TODO: someghign you have to do in here
+
+
+// Method Definitions
+
+
+// float (32) and double (64)
+let myFloat = Float (1.0 / 3.0)
+print ("Float is: \(myFloat)")
+
+let myDouble = Double (1.0 / 3.0)
+print ("Double is: \(myDouble)")
+
+
+let myLargeDouble = myDouble * 100000000000
+let myNSNumber = NSNumber (value: myLargeDouble)
+let myFormatter = NumberFormatter()
+myFormatter.numberStyle = NumberFormatter.Style.currencyAccounting
+let resVal = myFormatter.string(from: myNSNumber)
+print ("Res is: \(resVal!)")
+
+
+// FIXME: Wrong
+// #pragma mark -
+
+```
+
+
 ### Further Programming Recap
+
+**05 - Further Programming Recap**
+
+  
+
+More advanced topics in programming are perhaps one of our most difficult sections in this course primarily because it's a little dry. There are no actual apps here, but we still need to learn all of these concepts very well. In doing so, we need to dive further into programming. And learn the following concepts:
+
+  
+
+-   Classes and Objects
+    
+-   Inheritance
+    
+-   Initialize (& de-initialize)
+    
+-   Protocols & Categories
+    
+-   Class Extensions
+    
+-   Class Methods
+    
+-   Properties
+    
+-   Closures (& Completion Blocks)
+    
+-   Type Casting
+    
+-   Timers
+    
+-   Getting Help
+    
+-   Selectors (& Class Type)
+    
+
+  
+
+**OOP**
+
+OOP is a fundamental concept. OOP is a programming paradigm that can be defined as a contrast to other programming paradigms:
+
+  
+
+There are four main coding paradigms
+
+-   Functional which view programs as mathematical formulas
+    
+-   Imperative that view a program as a series of instructions
+    
+-   Logical that is a model of information and the relationship between them
+    
+-   OOP, where objects represent models and their interactions, handle data.
+    
+
+  
+
+-   In OOP, you have instructions that can build something. Those we call a **class**.
+    
+-   When we create an instance of that class, that we call an **object**.
+    
+-   Each class has a set of **attributes** and methods.
+    
+-   Attributes are things that a class **has** and subsequently, their **objects** **have**.
+    
+-   Methods are **functions** that instances of a class can do.
+    
+
+  
+
+**Classes**
+
+The next thing we have to learn is how to use the functions and attributes of a class in an object. We first have to learn about initializing a class. We should also know how to use classes within the same file or spread them in separate files. Instantiate objects from a class is a process in which we make objects from our classes.
+
+  
+
+**Classes in Objective-C**
+
+Similar to Swift, we can add classes in Objective-C which would require @interface and @implementation. We can then use these definitions to instantiate our objects. Unlike Swift, ObjC classes must have a base class. In the past, you have seen it when we used UIViewController Class and one of the most basic root classes is NSObject. Which is like a founding father of many classes. If you don’t know what base class you need, then you need NSObject.
+
+  
+
+**Object Inisitializations**
+
+In classes, you can add multiple different inits. You can make them required or convenience. There is a default init() associated with all classes. Inits from superclasses can also be overridden
+
+If you have overridden an init, you can no longer use the init()
+
+Swift automatically deallocates your instances when they are no longer needed
+
+  
+
+**De-init**
+
+Optionally classes may have a deinit method for deinitialization
+
+You could use the deinit method with no argument for some very specific purposes. For further learning please refer to:
+
+[https://docs.swift.org/swift-book/LanguageGuide/Initialization.html](https://docs.swift.org/swift-book/LanguageGuide/Initialization.html)
+
+And
+
+[https://docs.swift.org/swift-book/LanguageGuide/Deinitialization.html](https://docs.swift.org/swift-book/LanguageGuide/Deinitialization.html)
+
+  
+
+**Guard**
+
+Guard a programming structure to make sure some value actually exists. Guard in many ways is similar to an if let process. The only difference is that in guard if the value (or values) that you want don’t exist, the function should return.
+
+  
+
+**Convenience inits**
+
+Convenience initializers are supporting initializers to create an instance of that class for a specific use case or input value type. We often use convenience inits when we want to populate the initial values of an object using a set of values (mostly a dictionary)
+
+  
+
+**Inheritence**
+
+Inheritance is about subclassing and overriding parent class methods and adding custom inits to the subclasses. To override a characteristic that would otherwise be inherited, you prefix your overriding definition with the override keyword. Doing so clarifies that you intend to provide an override and have not provided a matching definition by mistake. Subclasses can have their own attributes and functions. They can also override the base class’s functions. Further Reading: [https://docs.swift.org/swift-book/LanguageGuide/Inheritance.html](https://docs.swift.org/swift-book/LanguageGuide/Inheritance.html)
+
+  
+
+**Enumerations**
+
+Enumerations (or enums) are used to define a group of related values in a type-safe way. The reason they are type-safe is simply that their values are constrained. Please read more on Enumeration in: [https://docs.swift.org/swift-book/LanguageGuide/Enumerations.html](https://docs.swift.org/swift-book/LanguageGuide/Enumerations.html)
+
+  
+
+  
+
+**Structures in Swift**
+
+Structs in Swift are very similar to that of Classes. The two big difference is:
+
+-   Structs cannot have a base class
+    
+-   Structs pass the value while classes pass the reference
+    
+-   As a result, classes are a lot larger and slower
+    
+
+As a rule of thumb, if you can get away with structs, use them, if not, use a class
+
+  
+
+**Selectors**
+
+In Objective-C we use respondsToSelector: to determine at runtime if an object knows how to handle a given message.
+
+We will also use the isKindOfClass in Objective-C to learn about the type of an object.
+
+  
+
+**Protocols**
+
+A protocol as the name implies is the blueprint of methods, properties, and other requirements that handle a certain task. They are then adopted by class, structure, or enumeration to do the actual work.
+
+Unlike Objective-C, swift doesn’t have optional functions in a protocol. If you need an optional function, you must leave its body empty.
+
+The protocol only specifies the required property name and type. Not whether it should be stored or computed.
+
+Protocols contain no logic. They are simply definitions of methods, no implementations. Further reading: [https://docs.swift.org/swift-book/LanguageGuide/Protocols.html](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html)
+
+  
+
+**Delegation**
+
+Delegation is a very commonly used pattern in iOS development. The delegate design pattern is a pattern that uses protocols. Delegation is when an object delegates some of its behavior or control to another object using a protocol and it is often used when an object needs to communicate information or request information from another object.
+
+In setting delegations for outlets, you could either add them by code using the .delegate, or in the storyboard by dragging over the view controller outlet. A text field for instance has many different delegates. It means many different protocols are being conformed in it.
+
+  
+
+**Categories in Objective-C**
+
+We will talk about the private categories in View Controllers used to declare private properties and methods. These are not exposed to any class outside this one.
+
+  
+
+**Categories**
+
+Categories are used when you want to add methods to classes. We use them for mathematical stuff or when we need new functionalities
+
+A question to ask yourself might be what is the difference between a category and a subclass?
+
+  
+
+**Extension**
+
+We use a class extension for breaking our code into so many pieces and modularizing it. These extensions in swift are the same as categories in Objective-C. In a real development in swift, we depend heavily on class extensions. Further reading at [https://docs.swift.org/swift-book/LanguageGuide/Extensions.html](https://docs.swift.org/swift-book/LanguageGuide/Extensions.html)
+
+  
+
+**Class Methods**
+
+Class methods are used to enact a function directly from a class and not an instanced object of it. Class and Static keywords have similar roles. Both the static and class keywords allow us to attach variables to a class rather than to instances of a class.
+
+Where static and class differ is how they support inheritance. When you make a static property it becomes owned by the class and cannot be changed by subclasses, whereas when you use class it may be overridden if needed. You can read further about this on [https://www.hackingwithswift.com/example-code/language/whats-the-difference-between-a-static-variable-and-a-class-variable](https://www.hackingwithswift.com/example-code/language/whats-the-difference-between-a-static-variable-and-a-class-variable)
+
+  
+
+**Reference Counting**
+
+Understanding various property attributes such as weak or retain is an important aspect of reference counting and memory management for iOS.
+
+ARC is XCode approach of memory management. It basically means when would the memory free up of an object.
+
+All variables are strong by default. We use a weak reference whenever it is valid for that reference to become nil at some point during its lifetime. Conversely, use an unowned reference when you know that the reference will never be nil once it has been set during initialization. You can read further about unowned references in this link:
+
+[https://agostini.tech/2017/07/23/memory-management-in-swift-the-strong-the-weak-and-the-unowned/](https://agostini.tech/2017/07/23/memory-management-in-swift-the-strong-the-weak-and-the-unowned/)
+
+  
+
+  
+
+Here is also a little comparison of all variable property attributes:
+
+-   **weak** -  it says "keep this as long as someone else points to it **strongly**
+    
+-   **atomic - multi-threaded.** Locks the value before any changes. so it turns something, even though it may not be correct
+    
+-   **nonatomic - a single thread.** Doesn’t lock the value, it clears it in the process of adding a new one. As a result, you might get nil
+    
+-   **Retain is a pointer to an object.** The setter will add a retain count to the object
+    
+-   **Assign:** When calling the getter of an assign property, it returns a reference to the actual data.
+    
+
+  
+
+**To read on this important topics, please visit:**
+
+[**https://stackoverflow.com/questions/8927727/objective-c-arc-strong-vs-retain-and-weak-vs-assign**](https://stackoverflow.com/questions/8927727/objective-c-arc-strong-vs-retain-and-weak-vs-assign)
+
+  
+
+**Timer**
+
+We use the built-in Timer class to count time in a variety of formats.
+
+  
+
+**Closure**
+
+Closures are important elements of swift programming. They help with dynamic variables as well as completion blocks (using Escaping Closures)
+
+Closures in Swift are similar to blocks in C and Objective-C and to lambdas in other programming languages
+
+Closures are self-contained blocks of functionality that can be passed around and used in your code.
+
+Closures are particularly useful when you work with functions or methods that take functions as one or more of their arguments
+
+You can read further about closures in [https://docs.swift.org/swift-book/LanguageGuide/Closures.html](https://docs.swift.org/swift-book/LanguageGuide/Closures.html)
+
+  
+
+  
+
+Wrap Up
+
+Doubles are similar to floats with more precision.
+
+NSNumber and its superclass NSValue are container objects for keeping numeric (or otherwise) values.
+
+We can use keywords such as the following to set regions in our code
+
+-   Pragma Mark (Objective-C)
+    
+-   MARK
+    
+-   TODO
+    
+-   FIXME
+
+## Intermediate user interface
+
+### Back To Basics
+
+### View Controller Life Cycle
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        // only once
+        print ("viewDidLoad")
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(true)
+        
+        print ("viewWillAppear")
+        // View will soon be SHOWN.
+        // Usefulf or when right before traninsitioning into another VC
+    }
+    
+    override func viewDidLayoutSubviews()
+    {
+        super.viewDidLayoutSubviews()
+        print ("viewDidLayoutSubviews")
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(true)
+        print ("viewDidAppear")
+        
+        // Start a timer
+        // Run an animation
+        // happens each time you land in this view controller
+    }
+    
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        super.viewDidDisappear(true)
+        // get rid of continues takss
+        print ("viewDidDisappear")
+
+    }
+    
+    
+    
+    override func didReceiveMemoryWarning()
+    {
+        super.didReceiveMemoryWarning()
+        print ("didReceiveMemoryWarning")
+    }
+    
+```
+
+drag btn
+![](assets/Pasted%20image%2020220929234006.png)
+
+![](assets/Pasted%20image%2020220929234037.png)
+![](assets/Pasted%20image%2020220929234122.png)
+show warning logs
+
+![](assets/Pasted%20image%2020220929234213.png)
+
+### Progress View
+Set progress to 0
+![](assets/Pasted%20image%2020220929234433.png)
+![](assets/Pasted%20image%2020220929234459.png)
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var myProgressView: UIProgressView!
+    var myTimer : Timer!
+    
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        myTimer = Timer.scheduledTimer(timeInterval: 0.01,
+                                       target: self,
+                                       selector: #selector (someProgress),
+                                       userInfo: nil,
+                                       repeats: true)
+    }
+
+    @objc func someProgress ()
+    {
+        if ( myProgressView.progress < 1 )
+        {
+            myProgressView.progress += 0.01;
+        }
+        else
+        {
+            myTimer.invalidate()
+        }
+    }
+}
+
+
+```
+
+Note: we have to add @objc to avoid error
+
+Make it slower by timeInterval: 1 => 100s
+
+
+
+### Legal Characters exercises
+
+```swift
+import UIKit
+
+
+
+
+class ViewController: UIViewController, UITextViewDelegate
+{
+    @IBOutlet weak var myTxtViw: UITextView!
+    @IBOutlet weak var textCounter: UILabel!
+    
+    
+    
+    
+    // shouldChangeTextIn to determine the value
+    func textView(_ textView: UITextView,
+                  shouldChangeTextIn range: NSRange,
+                  replacementText text: String) -> Bool
+    {
+        var alphaNum = CharacterSet.alphanumerics // don't include space
+        alphaNum.insert(" ")
+        let charSet = alphaNum.inverted
+        let filteredText = text.components(separatedBy: charSet).joined(separator: "")
+        
+        if ( text == "" && range.length > 0 ) { // this can only be a backspace
+            return true
+        }
+        
+        if ( filteredText == text && textView.text.count < 140 ) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+
+    // change color
+    func textViewDidChange(_ textView: UITextView)
+    {
+        let currentCount : Int = textView.text.count
+        textCounter.text = String (currentCount)
+        
+        let red = CGFloat ( currentCount) / 140.0
+        let green = 1 - red
+        
+        let newBg = UIColor (displayP3Red: red,
+                             green: green,
+                             blue: 0.0,
+                             alpha: 1.0)
+        textCounter.backgroundColor = newBg
+    }
+}
+
+
+```
+
+![](assets/Pasted%20image%2020220930074010.png)
+
+### Intro to Auto Layout
+![](assets/Pasted%20image%2020220930074257.png)
+Hold CTRL btn and drag from here to the top, left, width
+
+![](assets/Pasted%20image%2020220930074621.png)
+
+Select top space
+![](assets/Pasted%20image%2020220930074703.png)
+![](assets/Pasted%20image%2020220930074809.png)
+![](assets/Pasted%20image%2020220930074831.png)
+
+CTRL drag to itself to adjust height
+![](assets/Pasted%20image%2020220930075015.png)
+![](assets/Pasted%20image%2020220930075026.png)
+now we have fixed value
+![](assets/Pasted%20image%2020220930075114.png)
+You can clear all constraint
+![](assets/Pasted%20image%2020220930075223.png)
+
+CTRL
+![](assets/Pasted%20image%2020220930075357.png)
+
+height 44 for this screen
+
+![](assets/Pasted%20image%2020220930075643.png)
+![](assets/Pasted%20image%2020220930075718.png)
+now you can manually set it
+Change first item, multiplier
+![](assets/Pasted%20image%2020220930075832.png)
+Add view
+![](assets/Pasted%20image%2020220930080031.png)
+trailing 
+![](assets/Pasted%20image%2020220930080059.png)
+warning
+![](assets/Pasted%20image%2020220930080148.png)
+select vertical
+![](assets/Pasted%20image%2020220930080306.png)
+![](assets/Pasted%20image%2020220930081116.png)
+clear
+![](assets/Pasted%20image%2020220930081235.png)
+
+
+### Grid of by Exercise
+![](assets/Pasted%20image%2020220930081349.png)
+![](assets/Pasted%20image%2020220930081406.png)
+Fix it
+![](assets/Pasted%20image%2020220930081549.png)
+top, leading, bottom, 
+aspect ratio
+![](assets/Pasted%20image%2020220930081656.png)
+![](assets/Pasted%20image%2020220930081832.png)
+![](assets/Pasted%20image%2020220930082212.png)
+![](assets/Pasted%20image%2020220930082355.png)
+![](assets/Pasted%20image%2020220930082429.png)
+![](assets/Pasted%20image%2020220930082448.png)
+top leading trailing
+![](assets/Pasted%20image%2020220930082536.png)
+![](assets/Pasted%20image%2020220930205614.png)
+Image view
+![](assets/Pasted%20image%2020220930205732.png)
+ratio 1:3
+button 2
+![](assets/Pasted%20image%2020220930205817.png)
+drag btn to image view
+
+![](assets/Pasted%20image%2020220930210004.png)
+btn 1 vertical spacing to top and bottom, leading and trailing space
+![](assets/Pasted%20image%2020220930210121.png)
+set to 0
+
+
+
+### Hard coding interface
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+
+        let myOrig = CGPoint (x: 20,
+                              y: 40)
+        
+        let mySize = CGSize (width: self.view.frame.size.width - 40,
+                             height: 44)
+        
+        let myFrame = CGRect(origin: myOrig,
+                             size: mySize)
+        
+        let myLabel = UILabel (frame: myFrame)
+        
+        myLabel.text = "Hello"
+        myLabel.backgroundColor = UIColor.darkGray
+        
+        self.view.addSubview( myLabel )
+        
+        myLabel.center = self.view.center
+        
+        // frame includes the origin
+        // bounds has zero-zero origin (good for finding size)
+        
+        print ("Frame is: \(myLabel.frame)")
+        print ("Bounds is: \(myLabel.bounds)")
+
+    }
+}
+
+```
+
+### Ten Buttons Exercise
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+       
+        let margin : CGFloat = 20.0
+        let height : CGFloat = (self.view.frame.height - (20 + 11 * margin )) / 10
+        
+        for i in 0..<10
+        {
+            let myFrame = CGRect (x: margin,
+                                  y: 20 + margin + CGFloat (i) * (height + margin),
+                                  width: self.view.bounds.size.width - margin * 2,
+                                  height: height)
+            
+            let myButton = UIButton (frame: myFrame)
+            myButton.backgroundColor = UIColor.red
+            self.view.addSubview(myButton)
+        }
+    }
+}
+
+```
+
+### Auto Layout Coding
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        let redBox : UIView = UIView (frame: CGRect.zero)
+        redBox.backgroundColor = UIColor.red
+        self.view.addSubview( redBox )
+        redBox.translatesAutoresizingMaskIntoConstraints = false
+        
+        redBox.heightAnchor.constraint(equalToConstant: 200).isActive = true
+
+        redBox.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+        let redY = redBox.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
+        redY.isActive = true
+        
+        let widthConst = NSLayoutConstraint (item: redBox,
+                                             attribute: NSLayoutConstraint.Attribute.width,
+                                             relatedBy: NSLayoutConstraint.Relation.equal,
+                                             toItem: nil,
+                                             attribute: NSLayoutConstraint.Attribute.notAnAttribute,
+                                             multiplier: 1.0,
+                                             constant: 150.0)
+        
+        redBox.addConstraint(widthConst)
+    }
+
+
+}
+
+
+```
+
+### Stack view
+Drag to itself
+![](assets/Pasted%20image%2020220930211650.png)
+![](assets/Pasted%20image%2020220930211721.png)
+add leading, trailing, center
+![](assets/Pasted%20image%2020220930211900.png)
+![](assets/Pasted%20image%2020220930212116.png)
+![](assets/Pasted%20image%2020220930212228.png)
+![](assets/Pasted%20image%2020220930212617.png)
+
+
+
+long text 
+![](assets/Pasted%20image%2020220930212751.png)
+
+
+### Login UI
+![](assets/Pasted%20image%2020220930212907.png)
+Copy image to project
+![](assets/Pasted%20image%2020220930213028.png)
+
+
+
+### Profile UI Assignment
+
+### Intermediate user Interface Recap
+
+**06 - Intermediate User Interface Recap**
+
+  
+
+In intermediate user interfaces, you have to learn matters such as the use of delegations, frame size, autolayout and constraints.
+
+  
+
+**Info plist**
+
+We use the info plist file as a property list to entail the details about our app. You can read further about info plist at:
+
+[https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW1](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW1)
+
+  
+
+**View Controller Lifecycle**
+
+View controller life cycle is an important aspect of an app. In learning that we should look into matters such as layoutIfNeeded and setNeedsDisplay. In discussing a view controller life cycle the following functions are most important:
+
+  
+
+-   viewDidLoad: View is now created. Initialize your objects.
+    
+-   viewWillAppear: It runs every time the view appears. Don't run codes that shouldn't be repeated
+    
+-   viewDidLayoutSubviews: When the subviews are properly laid out
+    
+-   viewWillAppear: when the view has been laid out and is visible to the user. a good place to run animation, etc
+    
+-   viewDidAppear: often happening before the transition to another view controller
+    
+-   viewDidDisappear: when the view controller is no longer visible. useful to stop any continuously running tasks
+    
+-   didReceiveMemoryWarning: gets notified when you used up the available memory. You can use the built-in simulator feature to simulate a memory warning
+    
+
+**Progress View**
+
+We can use a progress view to demonstrate the progress of an event. For real-life applications, we do the progress increment using a real metric such as the downloaded amount. We could also simulate that using a Timer.
+
+  
+
+**Autolayout and Constraints**
+
+Using Autolayout is an important aspect of iOS development. Auto layout helps with views that operate in both portrait and landscape mods. It is also useful for when different devices want to use the same app. We should also learn about intrinsic values and learn how to specifically choose what size our different outlets have to be. You can add or clear all constraints in a view using the buttons at the bottom of the screen.
+
+  
+
+**Hard Coding Interface**
+
+Hard coding an outlet is an essential skill. You should know how to use a combination of Init, Frame, CGRect, CGPoint, and CGSize for a variety of situations to develop outlets programmatically.
+
+  
+
+**Autolayout in Coding**
+
+Autolayout constraints can also be added programmatically. These are useful when a group of outlets is to be created dynamically.
+
+  
+
+**Stack Views**
+
+As per Apple’s own documentation, we should try and use stack views for any situation where similar outlets are placed next to each other.
+
+### Inermediate UI Quiz
+
+## Touch and gesture
+
+### Begin & End Touch Methods
+
+
+![](assets/Pasted%20image%2020220930222113.png)
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var redBox: UIView!
+    
+    override func touchesBegan(_ touches: Set<UITouch>,
+                               with event: UIEvent?)
+    {
+        print ("a touch landed") // click outside the view
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>,
+                               with event: UIEvent?)
+    {
+        let myTouch = touches.first
+        
+        if ( myTouch?.view == redBox )
+        {
+            redBox.removeFromSuperview()
+        }
+    }
+}
+
+
+```
+
+
+### Touches Moved
+
+// place the red box where my touh is.
+// hov many touches are there
+// touch for the red box
+// but location for the main view
+/ offset against the touch
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var redBox: UIView!
+    var tapOffset : CGPoint!
+    
+    override func touchesBegan(_ touches: Set<UITouch>,
+                               with event: UIEvent?)
+    {
+        if ( touches.count == 1)
+        {
+            let myTouch = touches.first
+            if ( myTouch?.view == redBox )
+            {
+                let locInRed = (myTouch?.location(in: redBox))!
+                
+                let redMiddle = CGPoint (x: redBox.frame.size.width / 2,
+                                         y: redBox.frame.size.height / 2)
+                
+                let xDif = redMiddle.x - locInRed.x
+                let yDif = redMiddle.y - locInRed.y
+                
+                tapOffset = CGPoint (x: xDif, y: yDif)
+            }
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>,
+                               with event: UIEvent?)
+    {
+        if ( touches.count == 1)
+        {
+            let myTouch = touches.first
+            if ( myTouch?.view == redBox )
+            {
+                let locInView : CGPoint = (myTouch?.location(in: self.view))!
+                
+                redBox.center = locInView + tapOffset
+            }
+        }
+    }
+}
+
+// function overload +
+func +(firstVec: CGPoint, secondVec: CGPoint) -> CGPoint
+{
+    return CGPoint (x: firstVec.x + secondVec.x,
+                    y: firstVec.y + secondVec.y)
+}
+
+func -(firstVec: CGPoint, secondVec: CGPoint) -> CGPoint
+{
+    return CGPoint (x: firstVec.x - secondVec.x,
+                    y: firstVec.y - secondVec.y)
+}
+
+```
+
+### Tap Fast
+
+Disable isUserInteractionEnabled in UI
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var tapArea: UIView!
+    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var tapsCountLabel: UILabel!
+    
+    var curTime : Int!
+    var timer: Timer!
+    var count: Int!
+    var play = true
+    
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        tapArea.isUserInteractionEnabled = true
+        count = 0
+        curTime = 0
+        timer = Timer.scheduledTimer(timeInterval: 1.0,
+                                     target: self,
+                                     selector: #selector(countTime),
+                                     userInfo: nil,
+                                     repeats: true)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>,
+                               with event: UIEvent?)
+    {
+        if ( touches.count == 1 && play)
+        {
+            let myTouch = touches.first
+            if ( myTouch?.view == tapArea)
+            {
+                count += 1
+                tapsCountLabel.text = "\(count!)"
+            }
+        }
+    }
+    
+    
+
+    @objc func countTime ()
+    {
+        if ( curTime <= 10 )
+        {
+            timeLabel.text = "\(curTime!)"
+            curTime += 1
+        }
+        else
+        {
+            play = false
+            timer.invalidate()
+        }
+    }
+
+}
+
+
+```
+
+### Gestures in Interface Builder
+![](assets/Pasted%20image%2020220930225504.png)
+add
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+
+    @IBAction func myGestureAction(_ sender: Any)
+    {
+        if let myRotGest = (sender as? UIRotationGestureRecognizer)
+        {
+            let degRot = myRotGest.rotation * 180 / CGFloat.pi
+            print ("Rotation is: \(degRot)")
+            
+            
+        }
+    }
+    
+
+}
+
+
+```
+new type
+![](assets/Pasted%20image%2020220930225826.png)
+![](assets/Pasted%20image%2020220930225920.png)
+
+
+### Gestures in code
+
+### Custom Gesture
+
+### Transformations
+
+### Preview
+
+### CG Transforms & Touches
+
+### Custom Gesture Assignment
+
+### Touches & Gestures Recap
