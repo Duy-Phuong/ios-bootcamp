@@ -5721,16 +5721,236 @@ another way
 ![](assets/Pasted%20image%2020221001160853.png)
 ![](assets/Pasted%20image%2020221001160940.png)
 ![](assets/Pasted%20image%2020221001161044.png)
-
+![](assets/Pasted%20image%2020221001161141.png)
+Create single view component
+Create TabBar in UI
+![](assets/Pasted%20image%2020221001161557.png)
+add constraints
+![](assets/Pasted%20image%2020221001161755.png)
+![](assets/Pasted%20image%2020221001161829.png)
+![](assets/Pasted%20image%2020221001161846.png)
 
 
 
 ### Tab Bar + Navigation Controller
+Create single app and push TabBarController to it
+![](assets/Pasted%20image%2020221001161957.png)
+![](assets/Pasted%20image%2020221001162132.png)
+![](assets/Pasted%20image%2020221001162240.png)
+![](assets/Pasted%20image%2020221001162348.png)
+![](assets/Pasted%20image%2020221001162418.png)
+![](assets/Pasted%20image%2020221001162635.png)
+![](assets/Pasted%20image%2020221001162701.png)
+![](assets/Pasted%20image%2020221001162914.png)
+![](assets/Pasted%20image%2020221001162945.png)
+![](assets/Pasted%20image%2020221001163319.png)
+
+
 
 ### Split View Controller
+![](assets/Pasted%20image%2020221001163613.png)
+
 
 ### UI Popover Presentation
+Ipad
+![](assets/Pasted%20image%2020221001163802.png)
+
+
 
 ### Advanced User Interfaces Recap
+Advanced User Interfaces Recap
+
+  
+
+**01 - Alert Controllers**
+
+We use alert controller to display a message box to user depending on different situations. Alert Controllers can be used with both buttons as well as with text fields.
+
+  
+
+**02 - Date Picker Views**
+
+Date Picker Views allow users to choose a certain date (or hour) from a convenient and familiar interface. We should also learn about standard time formats and how to compare dates and times against one another. Date picker views also offer different display modes.
+
+  
+
+**03 - Custom Picker Views**
+
+We use custom picker views to display picker views with content that could be almost anything (labels, images, etc). We can also change the content of the sections independently as well as changing the sections based on each other.
+
+  
+
+**04 - Container Views**
+
+Container views, allow us to embed one view controller within another one. A main advantage of this is to be able to share a view controller between two or more view controllers.
+
+  
+
+**05 - IB Outlet Collection**
+
+IB Outlet Collections allow us to control multiple outlets using one variable.
+
+  
+
+**06 - Navigation Controller**
+
+There are different segue controllers and methods for navigating from one view controller to another one. Navigation controller uses the show method which pushes the destination view controller onto the navigation stack, moving the source view controller out of the way (destination slides overtop from right to left), providing a back button for navigating back to the source - on all devices. For using Navigation Controllers, we can either start with a new Nav Controller and add our view controller as the “Root View Controller” or embed our existing view controllers within a Nav Controller.
+
+  
+
+**07 - Separate Storyboards**
+
+We can use the Storyboard Reference in interface builder to get a reference to another storyboard for navigating between different storyboards. We could also load different storyboards using the file name in the code.
+
+  
+
+**08 - Tab Bar Controllers**
+
+We can use tab bar controllers either as a part of the tabbed application template or by adding a tab bar to any UI view controller. In a tab bar controller scenario, we add the view controllers as the “viewcontrollers” variable of the main tabbed bar controller.
+
+  
+
+**09 - Split View Controller**
+
+We use a split view controller in landscape mode of larger iPhone devices or on iPad devices to split the view between two different view controllers. Although this is primarily designed for Table Views, we could still use them for other types of view controllers as well.
+
+  
+
+**10 - UI Pop Over Presentation**
+
+A UI Pop Over presentation is primarily used in iPad, and the destination VC appears in a small popover, and tapping anywhere outside of this popover will dismiss it. On iPhone, popovers are supported as well, but by default, if it performs a Popover Presentation segue, it will present the destination view controller modally over the full screen
+
+## Table Views and Collection Views
 
 ### Advanced User Interfaces Quiz
+
+### Introduction to Table Views and Collections Views
+
+### Table View Controller
+![](assets/Pasted%20image%2020221001174236.png)
+Delete ViewController
+Create and link class
+![](assets/Pasted%20image%2020221001174400.png)
+
+Change Id and style
+![](assets/Pasted%20image%2020221001174622.png)
+![](assets/Pasted%20image%2020221001174810.png)
+![](assets/Pasted%20image%2020221001174844.png)
+
+
+
+
+
+### Table Views in any Controller
+Add constraints
+![](assets/Pasted%20image%2020221001175054.png)
+![](assets/Pasted%20image%2020221001175115.png)
+![](assets/Pasted%20image%2020221001175157.png)
+![](assets/Pasted%20image%2020221001175321.png)
+![](assets/Pasted%20image%2020221001175428.png)
+![](assets/Pasted%20image%2020221001175523.png)
+![](assets/Pasted%20image%2020221001175539.png)
+Drag my table view to view controller
+or
+![](assets/Pasted%20image%2020221001175630.png)
+![](assets/Pasted%20image%2020221001175657.png)
+show header of table
+![](assets/Pasted%20image%2020221001175731.png)
+
+
+
+### Custom Table View Cell
+![](assets/Pasted%20image%2020221001175819.png)
+
+
+### Search in Tables
+![](assets/Pasted%20image%2020221001175844.png)
+
+### Table View Methods
+![](assets/Pasted%20image%2020221001175910.png)
+
+
+### Multiple Edit Buttons
+
+### Pull to Refresh
+
+### Master Detail App
+
+### Shopping List App Exercise
+![](assets/Pasted%20image%2020221001180020.png)
+
+### Collection Views
+![](assets/Pasted%20image%2020221001180156.png)
+
+### Custom Cells in Collection Views
+![](assets/Pasted%20image%2020221001180218.png)
+
+### Deleting Cells in Collection Views
+
+### Collection Views Drag and Drop
+
+### Supplementary Views in Collection Views
+
+### Collection View Layout
+![](assets/Pasted%20image%2020221001180117.png)
+
+### Shopping List App Drag and Drop Assignment
+
+### Table View and Collection Views Recap
+A table view controller is a sub-class of view controller that has a built-in table view where both delegate and data source refer to the class of the outlet.
+
+  
+
+By using a table view outlet, we can add a table view to any types of view controller or view. In doing so, we have to conform our owner class to both UITableViewDelegate and UITableViewDataSource.
+
+  
+
+By default XCode offers a few different types of cells. These are however quite basic and real application often needs a custom cell in which the developer can embed a variety of objects.
+
+  
+
+We use search controllers within a searchable view controller to find specific elements. Search controllers often have both a Search Bar and a Search Result Controller where we can view the results of the search.
+
+In applying a search controller to a table view, we can filter the items in the table view directly.
+
+  
+
+Table views have a multitude of methods that help with their look, navigation, buttons, etc.
+
+  
+
+Table view cells can host a number of different buttons at their edit time. The default one however is only one.
+
+  
+
+Table views have a built-in refresh control that allows for re-reading the data model.
+
+  
+
+Table views are one of the most important outlets of iOS design. It’s hard to imagine an app without any table views. The default use of a table view can be viewed in the master/detail template.
+
+  
+
+Collection Views help us in arranging a number of items in many different formats such as a grid. They are popular outlets for situations when different objects in a list are accompanied by a picture. A prime example is the Photos app.
+
+  
+
+Similar to table views, collection views also allow us to have custom cells.
+
+  
+
+Unlike table views where a default swipe can delete a cell, in collection views, we have to devise our own delete function.
+
+  
+
+A primary feature of using collection views is the ability to drag and drop. I would recommend you read further on this topic as well: https://hackernoon.com/drag-it-drop-it-in-collection-table-ios-11-6bd28795b313
+
+  
+
+Collection Views also benefit from supplementary views in which you can add a number of functionalities.
+
+  
+
+A major strength of collection views is in their ability to lay the items out in different ways. Read Further about UI Collection View Layout at:
+
+https://developer.apple.com/documentation/uikit/uicollectionviewlayout
