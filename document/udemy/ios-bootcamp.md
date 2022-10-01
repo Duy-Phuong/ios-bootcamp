@@ -1,6 +1,8 @@
 
 
 https://www.udemy.com/course/complete-ios-bootcamp/
+https://www.programiz.com/swift-programming/hello-world
+
 
 ## The very basic
 
@@ -4716,18 +4718,1019 @@ class ViewController: UIViewController
 new type
 ![](assets/Pasted%20image%2020220930225826.png)
 ![](assets/Pasted%20image%2020220930225920.png)
+![](assets/Pasted%20image%2020220930230038.png)
 
 
 ### Gestures in code
 
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        let myLongGest = UILongPressGestureRecognizer (target: self,
+                                                       action: #selector(gestFunc))
+        
+        self.view.addGestureRecognizer(myLongGest)
+    }
+
+    
+    @objc func gestFunc()
+    {
+        print ("Long pressed")
+    }
+
+}
+
+
+```
+
 ### Custom Gesture
+![](assets/Pasted%20image%2020220930233413.png)
+
+check  against
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var resLabel: UILabel!
+    @IBOutlet weak var drawView: UIView!
+    @IBOutlet weak var startLabel: UILabel!
+    @IBOutlet weak var endLabel: UILabel!
+    
+    var mySimpleGesture : MyCustomGesture!
+    var pointOne: CGPoint!
+    var pointTwo: CGPoint!
+    
+    @IBAction func redrawAction(_ sender: Any)
+    {
+        var ranX = CGFloat(arc4random_uniform(UInt32(drawView.frame.size.width)))
+        var ranY = CGFloat(arc4random_uniform(UInt32(drawView.frame.size.height)))
+        pointOne = CGPoint (x: ranX, y: ranY)
+        startLabel.center = pointOne
+        
+        ranX = CGFloat(arc4random_uniform(UInt32(drawView.frame.size.width)))
+        ranY = CGFloat(arc4random_uniform(UInt32(drawView.frame.size.height)))
+        pointTwo = CGPoint (x: ranX, y: ranY)
+        endLabel.center = pointTwo
+    }
+    
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        redrawAction(self)
+        
+        mySimpleGesture = MyCustomGesture (target: self,
+                                           action: #selector (gestAction))
+        drawView.addGestureRecognizer(mySimpleGesture)
+    }
+    
+    
+    
+    
+    
+    
+    
+    @objc func gestAction ()
+    {
+        let curAngle = atan2(pointTwo.y - pointOne.y, pointTwo.x - pointOne.x)
+        let tolerance : CGFloat = 0.2
+        
+        if ( mySimpleGesture.state == UIGestureRecognizer.State.ended )
+        {
+            let angleDiff = abs (mySimpleGesture.angle - curAngle)
+        
+            if ( angleDiff < tolerance )
+            {
+                resLabel.text = "YOU FOUND THE DIRECTION"
+                resLabel.backgroundColor = UIColor.green
+            }
+            else
+            {
+                resLabel.text = "TRY AGAIN"
+                resLabel.backgroundColor = UIColor.red
+            }
+        
+        }
+        // compare
+    }
+}
+
+
+class MyCustomGesture: UIGestureRecognizer
+{
+    var angle: CGFloat = 0.0
+    var startingPoint: CGPoint!
+    var endingPoint: CGPoint!
+    var tempGuides: Array <UIView> = []
+    
+    override func touchesBegan(_ touches: Set<UITouch>,
+                               with event: UIEvent)
+    {
+        state = UIGestureRecognizer.State.began
+        startingPoint = touches.first?.location(in: view)
+        angle = 0.0
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>,
+                               with event: UIEvent)
+    {
+        let guide = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 5))
+        guide.backgroundColor = UIColor.red
+        guide.center = (touches.first?.location(in: view))!
+        view?.addSubview(guide)
+        tempGuides.append(guide)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>,
+                               with event: UIEvent)
+    {
+        for any in tempGuides {
+            any.removeFromSuperview()
+        }
+        tempGuides = []
+            
+        state = UIGestureRecognizer.State.ended
+        endingPoint = touches.first?.location(in: view)
+        
+        angle = atan2(endingPoint.y - startingPoint.y,
+                      endingPoint.x - startingPoint.x)
+    }
+    
+}
+
+```
+
 
 ### Transformations
 
-### Preview
+Create UIView
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var redBox: UIView!
+
+    @IBAction func applyTransofmrtaion(_ sender: Any)
+    {
+//        redBox.transform = redBox.transform.translatedBy(x: 20.0, y: 0.0)
+
+//        redBox.transform = redBox.transform.rotated(by: CGFloat.pi * 30.0 / 180.0)
+//        redBox.transform = redBox.transform.scaledBy(x: 0.8, y: 1.05)
+
+        // reseting
+        redBox.transform = CGAffineTransform.identity
+        
+        let rotationTrans = CGAffineTransform(rotationAngle: 1.2)
+        let scaleTrans = CGAffineTransform (scaleX: 1.1, y: 1.1)
+        
+        redBox.transform = rotationTrans.concatenating(scaleTrans)
+    }
+}
+
+
+```
+
+
+### Rotate and scale
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var redBox: UIView!
+    var rotGest : UIRotationGestureRecognizer!
+    var scaleGest : UIPinchGestureRecognizer!
+    
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        rotGest = UIRotationGestureRecognizer (target: self,
+                                               action: #selector (rotAction))
+        
+        scaleGest = UIPinchGestureRecognizer (target: self,
+                                              action: #selector (scaleAction))
+        redBox.addGestureRecognizer(rotGest)
+        redBox.addGestureRecognizer(scaleGest)
+    }
+    
+    @objc func rotAction()
+    {
+        let newRot = rotGest.rotation
+        redBox.transform = redBox.transform.rotated(by: newRot)
+        rotGest.rotation = 0.0
+    }
+
+    @objc func scaleAction()
+    {
+        let newScale = scaleGest.scale
+        redBox.transform = redBox.transform.scaledBy(x: newScale,
+                                                     y: newScale)
+        scaleGest.scale = 1.0
+    }
+
+}
+
+
+```
+
 
 ### CG Transforms & Touches
+rewatch
+
 
 ### Custom Gesture Assignment
 
 ### Touches & Gestures Recap
+**07 - Touches & Gestures Recap**
+
+  
+
+We use touches and gestures to produce a variety of user interactions with almost any kind of outlet. They help us with matters such detecting a tap on an item or when we pinch two taps and want to rotate an object.
+
+  
+
+**Touches Began & Ended**
+
+Touches began and ended are the most basic touch events. We use them to trigger the moment any number of touches have landed or left the screen.
+
+  
+
+**Touches Moved**
+
+Touches moved method is the next in line of the touches actions. Similar to both touches began and ended, it returns both the current location and the previous location of the touch in the view.
+
+  
+
+**Function Overloads**
+
+We use function overloads to call the same method but with different parameters or arguments. Function overloads help us add functionality to our code based on what we expect to write in the code. Read more on function overloads in:
+
+[https://www.programiz.com/swift-programming/function-overloading](https://www.programiz.com/swift-programming/function-overloading)
+
+  
+
+**UI Gestures**
+
+We use UI Gesture Recognizer in the interface builder to add gestures such as pan, long press or pinch to our views. Gestures can be used either as a point to return a value such as the amount of rotation or to trigger a segue. We can add gesture recognizer in both the interface builder and the code. In order to add Gesture Recognizers in the code, we have to add them to a view.
+
+  
+
+**CG Transform**
+
+CG Transforms are a part of core graphics that help us translate, scale, rotate or skew an outlet.
+
+  
+
+**Custom UI Gestures**
+
+To use a GestureRecognizer we should sub-class it.
+
+
+## Graphics and animations
+
+
+### View Animations
+Create outlet manually
+![](assets/Pasted%20image%2020221001001755.png)
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var redBox: UIView!
+    @IBOutlet weak var orangeBox: UIView!
+    
+    @IBAction func animate ()
+    {
+        UIView.beginAnimations(nil, context: nil)
+        UIView.setAnimationDuration(2)
+        UIView.setAnimationCurve(UIView.AnimationCurve.easeIn)
+        redBox.center = CGPoint (x: redBox.center.x,
+                                 y: redBox.center.y + 400)
+        
+        UIView.setAnimationCurve(UIView.AnimationCurve.linear)
+        orangeBox.center = CGPoint (x: orangeBox.center.x,
+                                    y: orangeBox.center.y + 400)
+        
+        UIView.commitAnimations()
+    }
+    
+
+
+}
+
+
+```
+
+Drag animate to button
+
+![](assets/Pasted%20image%2020221001002013.png)
+
+
+
+
+### Animation Blocks
+
+```swift
+import UIKit
+
+class ViewController: UIViewController {
+    
+    @IBOutlet weak var redBox: UIView!
+    @IBOutlet weak var orangeBox: UIView!
+    
+    @IBAction func animateAction(_ sender: Any)
+    {
+        UIView.animate(withDuration: 2,
+                       animations:
+            {
+                self.orangeBox.alpha = 0.2 // disapear orangeBox
+        }) { (res) in
+            UIView.animate(withDuration: 3,
+                           animations:
+                {
+                    self.redBox.center = CGPoint (x: self.redBox.center.x,
+                                                  y: self.redBox.center.y + 300)
+            })
+        }
+    }
+    
+    
+}
+
+
+```
+
+### Animation loops exercises
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var redBox: UIView!
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        reset()
+    }
+
+    func reset ()
+    {
+        redBox.center = CGPoint (x: -redBox.frame.size.width / 2,
+                                 y: redBox.center.y)
+        self.animate()
+    }
+    
+    func animate() -> Void
+    {
+        UIView.animate(withDuration: 2.0,
+                       animations: {
+                        self.redBox.center = CGPoint (x: self.view.frame.width + self.redBox.frame.size.width / 2,
+                                                 y: self.redBox.center.y)
+        }) { (res) in
+            self.reset ()
+        }
+    }
+
+}
+
+
+```
+
+### Chart Graph Exercise
+
+### Spring Animation
+
+### Transition
+
+```swift
+import UIKit
+
+class ViewController: UIViewController {
+
+    
+    @IBOutlet weak var redLabel: UILabel!
+    
+    @IBAction func animateAction(_ sender: Any)
+    {
+        UIView.transition(with: self.redLabel,
+                          duration: 1.0,
+                          options: UIView.AnimationOptions.transitionCurlUp,
+                          animations:
+            {
+                self.redLabel.backgroundColor = UIColor.darkGray
+                self.redLabel.text = "iOS"
+        },
+                          completion: nil)
+
+        
+    }
+
+}
+
+
+```
+
+
+### Core Graphics Basics
+
+// needs a context
+// context only works within the draw of a ui View
+
+```swift
+import UIKit
+
+class DrawingView: UIView {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func draw(_ rect: CGRect) {
+        if let context = UIGraphicsGetCurrentContext()
+        {
+            context.setFillColor(UIColor.red.cgColor)
+            context.fill(CGRect(x: 20,
+                                y: 40,
+                                width: self.frame.size.width - 40,
+                                height: 200))
+            
+            context.setFillColor(UIColor.blue.cgColor)
+            context.fillEllipse(in: CGRect(x: 20,
+                                           y: 260,
+                                           width: self.frame.size.width - 40,
+                                           height: 200))
+
+            context.setLineWidth(10.0)
+            context.setStrokeColor(UIColor.green.cgColor)
+            let pointsArr = [CGPoint(x: 20,
+                                     y: 480),
+                             CGPoint(x: self.frame.size.width - 40,
+                                     y: 480)]
+            
+            context.addLines(between: pointsArr)
+            context.strokeLineSegments(between: pointsArr)
+            
+        }
+    }
+}
+
+
+class ViewController: UIViewController
+{
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        let theView = DrawingView (frame: self.view.frame)
+        theView.backgroundColor = UIColor.lightGray
+        self.view.addSubview(theView)
+        theView.setNeedsDisplay()
+    }
+
+
+}
+
+
+```
+![](assets/Pasted%20image%2020221001010417.png)
+
+### Bezier Path Linear
+
+### Bezier Path Curves
+
+### Finger Drawing App Assignment
+
+### CA Layer Intro
+
+### Preview
+
+### View With Gradient Background Exercise
+
+### Core Animation Basics
+
+### Core Animation Keyframes
+
+### Draw Animation Path Exercise
+
+### CA Transactions
+
+### Preview
+
+### UI Dynamics
+
+### Graphics & Animations Recap
+
+
+## Scroll View
+![](assets/Pasted%20image%2020221001013555.png)
+Drag it into scroll view
+![](assets/Pasted%20image%2020221001013638.png)
+![](assets/Pasted%20image%2020221001013709.png)
+![](assets/Pasted%20image%2020221001013750.png)
+![](assets/Pasted%20image%2020221001013846.png)
+Set leading and trailing to 0
+![](assets/Pasted%20image%2020221001013928.png)
+![](assets/Pasted%20image%2020221001013950.png)
+and the value is 0
+![](assets/Pasted%20image%2020221001014018.png)
+![](assets/Pasted%20image%2020221001014101.png)
+![](assets/Pasted%20image%2020221001014203.png)
+
+
+
+### Content Size
+![](assets/Pasted%20image%2020221001072946.png)
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    @IBOutlet weak var myScrollView: UIScrollView!
+    var myRedView : UIView!
+    
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        myRedView = UIView (frame: CGRect(x: 0,
+                                          y: 0,
+                                          width: myScrollView.bounds.width,
+                                          height: 2000.0))
+        myRedView.backgroundColor = UIColor.red
+        
+        myScrollView.contentSize = CGSize(width: myScrollView.bounds.width,
+                                          height: 2000.0)
+        
+        myScrollView.addSubview(myRedView)
+        
+        myScrollView.contentInset = UIEdgeInsets(top: 64.0,
+                                                 left: 0,
+                                                 bottom: 0,
+                                                 right: 0)
+        
+        
+    }
+
+
+}
+
+
+```
+
+Height of btn is 64
+![](assets/Pasted%20image%2020221001073832.png)
+Leading and traling to View
+![](assets/Pasted%20image%2020221001073859.png)
+The same height
+![](assets/Pasted%20image%2020221001073920.png)
+
+![](assets/Pasted%20image%2020221001073737.png)
+
+
+### Delegate Methods
+![](assets/Pasted%20image%2020221001074124.png)
+
+
+```swift
+import UIKit
+
+class ViewController: UIViewController, UIScrollViewDelegate
+{
+
+    @IBOutlet weak var myScrollView: UIScrollView!
+    
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        myScrollView.contentSize = CGSize(width: 600.0,
+                                          height: 1800.0)
+        myScrollView.delegate = self
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView)
+    {
+        print("scrollViewDidScroll")
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView,
+                                  willDecelerate decelerate: Bool)
+    {
+        print("scrollViewDidEndDragging")
+        if ( decelerate )
+        {
+            print("Slowing Down")
+        }
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
+    {
+        print("scrollViewWillBeginDragging")
+
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
+    {
+        print("It STOPPED")
+
+    }
+    
+}
+
+
+```
+
+![](assets/Pasted%20image%2020221001074445.png)
+
+### Zooming
+Create scroll view and add costraints to 0
+![](assets/Pasted%20image%2020221001075249.png)
+Add to leading trailing space
+![](assets/Pasted%20image%2020221001075348.png)
+![](assets/Pasted%20image%2020221001075416.png)
+rate 1:1
+![](assets/Pasted%20image%2020221001075536.png)
+![](assets/Pasted%20image%2020221001075554.png)
+
+
+```swift
+import UIKit
+
+class ViewController: UIViewController, UIScrollViewDelegate
+{
+    @IBOutlet weak var myScrollView: UIScrollView!
+    
+    @IBOutlet weak var myImgView: UIImageView!
+    
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView?
+    {
+        return myImgView
+    }
+
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView,
+                                 with view: UIView?,
+                                 atScale scale: CGFloat)
+    {
+        myScrollView.zoomScale = 1.0
+    }
+
+}
+
+
+```
+
+### Paging
+Add constrants 20 to scrollView
+Constraint View to scrollView: top, leading, bottom, trailing
+![](assets/Pasted%20image%2020221001083212.png)
+![](assets/Pasted%20image%2020221001083256.png)
+aspect ratio: 
+![](assets/Pasted%20image%2020221001083411.png)
+
+RC => Equal height
+Create another View inside MainView
+![](assets/Pasted%20image%2020221001083801.png)
+aspect ratio
+![](assets/Pasted%20image%2020221001083848.png)
+top, bottom is 0
+Paging enable
+![](assets/Pasted%20image%2020221001084109.png)
+
+
+
+### UI Page Controller
+UI page controller
+
+```swift
+import UIKit
+
+class ViewController: UIViewController {
+    
+    
+    @IBOutlet weak var myPageController: UIPageControl!
+    
+
+    @IBAction func pagedAction(_ sender: Any)
+    {
+        if let myPgCtrl = sender as? UIPageControl
+        {
+            print("You are now at \( myPgCtrl.currentPage )")
+        }
+    }
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        myPageController.numberOfPages = 6
+        
+        myPageController.transform = myPageController.transform.scaledBy(x: 2.0, y: 2.0)
+    }
+
+
+}
+
+
+```
+
+add constraint
+
+
+### Scroll with Page Control Exercise
+rewatch
+
+
+### Reusable UIView With XIB
+new file
+```swift
+import UIKit
+
+class MyView: UIView
+{
+    @IBOutlet weak var contentView : UIView!
+    @IBOutlet weak var tpLabel : UILabel!
+
+    // initialize using storyboard
+    required init?(coder aDecoder: NSCoder)
+    {
+        super.init(coder: aDecoder)
+        
+        Bundle.main.loadNibNamed("MyView",
+                                 owner: self,
+                                 options: nil)
+        
+        addSubview(contentView)
+        contentView.frame = self.bounds
+    }
+
+}
+
+
+```
+
+MyView.xib
+
+![](assets/Pasted%20image%2020221001085626.png)
+add class
+![](assets/Pasted%20image%2020221001085746.png)
+
+![](assets/Pasted%20image%2020221001085808.png)
+
+drag label
+
+Add constraint 0
+![](assets/Pasted%20image%2020221001085924.png)
+
+```swift
+import UIKit
+
+class ViewController: UIViewController
+{
+    
+    @IBOutlet weak var container: MyView!
+    
+
+
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+        
+        container.tpLabel.text = "Loaded from View Controller"
+    }
+
+
+}
+
+
+```
+### Custom View in Scroll View
+
+![](assets/Pasted%20image%2020221001140400.png)
+
+rewatch
+
+
+### Scroll with Fit Images Exercise
+rewatch
+
+
+### Fit Images in Storyboard Assignment
+
+
+
+### Scroll View Recap
+**10 - Scroll Views Recap**
+
+  
+
+**Intro**
+
+Scroll views are a fundamental aspect of using iOS. They enable many of the other outlets such as Table Views or Collection Views.
+
+  
+
+**Content and Constraints**
+
+For using a scroll view, you would usually want to have a content view within the body of your scroll view which contains all your objects. You can simply add constraints (4 corners + w & h) in the add constraint window
+
+  
+
+**Content Size**
+
+In a scroll view, if you do not use auto layout to infer the content size values, you should produce the content size values using a content size value.
+
+  
+
+**Content Inset**
+
+Content insets solve the problem of having content that goes underneath other parts of the User Interface and yet still remains reachable using scroll bars. In other words, the purpose of the Content Inset is to make the interaction area smaller than its actual area.
+
+  
+
+**UI Scroll View Delegate Methods**
+
+Scroll Views have a multitude of delegation methods such as didEndScrolling or scrollViewDidScroll.
+
+  
+
+**Zooming**
+
+In zooming a scroll view, the important thing to remember is that the zoom happens on a content piece from the scroll view. Content view for zooming should be a subview of the scroll view itself. You have to set the minimum and maximum of zoom.
+
+Paging
+
+Paging is an interesting and yet simple feature of scroll views. It allows for scrolling an entire page of the scroll view.
+
+  
+
+**Page Controllers**
+
+We use page controls to display a number of page content in outlets such as scroll views.
+
+  
+
+**View Re-Usability**
+
+Re-usability of UI Views is an important aspect of any good design. Among many methods for re-using a view, adding a XIB and loading it as a nib is only one of the many solutions. Custom XIBs do not have to adhere to the same size as the main screen. They can be longer, wider or shorter
+
+## Introduction to Advanced User Interfaces
+
+### Alert controller
+![](assets/Pasted%20image%2020221001141337.png)
+![](assets/Pasted%20image%2020221001141356.png)
+![](assets/Pasted%20image%2020221001143612.png)
+![](assets/Pasted%20image%2020221001143736.png)
+![](assets/Pasted%20image%2020221001143840.png)
+
+
+### Comparing Dates
+mode is date time
+![](assets/Pasted%20image%2020221001144202.png)
+
+![](assets/Pasted%20image%2020221001144356.png)
+![](assets/Pasted%20image%2020221001144603.png)
+![](assets/Pasted%20image%2020221001144654.png)
+![](assets/Pasted%20image%2020221001144754.png)
+
+
+### Picker View
+search picker view
+![](assets/Pasted%20image%2020221001145438.png)
+![](assets/Pasted%20image%2020221001145538.png)
+![](assets/Pasted%20image%2020221001145700.png)
+![](assets/Pasted%20image%2020221001145726.png)
+
+change to return 2
+![](assets/Pasted%20image%2020221001150022.png)
+![](assets/Pasted%20image%2020221001150201.png)
+![](assets/Pasted%20image%2020221001150244.png)
+![](assets/Pasted%20image%2020221001150320.png)
+![](assets/Pasted%20image%2020221001150523.png)
+
+
+
+
+
+### Container View
+![](assets/Pasted%20image%2020221001152021.png)
+![](assets/Pasted%20image%2020221001152039.png)
+
+Create cocoa touch class GreenView controller
+![](assets/Pasted%20image%2020221001152307.png)
+![](assets/Pasted%20image%2020221001152457.png)
+![](assets/Pasted%20image%2020221001152520.png)
+
+
+
+### Shared Entry Form Exercise
+create another cocoa touch class and connect to new view controller
+![](assets/Pasted%20image%2020221001152830.png)
+![](assets/Pasted%20image%2020221001152912.png)
+![](assets/Pasted%20image%2020221001153049.png)
+create another cocoa touch class
+![](assets/Pasted%20image%2020221001153202.png)
+![](assets/Pasted%20image%2020221001153322.png)
+![](assets/Pasted%20image%2020221001153416.png)
+![](assets/Pasted%20image%2020221001153457.png)
+copy
+![](assets/Pasted%20image%2020221001153634.png)
+Similarly, greenToShareId
+Initialized delegate
+![](assets/Pasted%20image%2020221001153801.png)
+copy to green
+
+
+
+### IB Outlet Collection
+btn
+![](assets/Pasted%20image%2020221001154226.png)
+
+![](assets/Pasted%20image%2020221001154404.png)
+![](assets/Pasted%20image%2020221001154430.png)
+Drag btn action to file
+![](assets/Pasted%20image%2020221001154538.png)
+![](assets/Pasted%20image%2020221001154637.png)
+
+
+### Navigation Controller
+![](assets/Pasted%20image%2020221001154757.png)
+or
+![](assets/Pasted%20image%2020221001154821.png)
+![](assets/Pasted%20image%2020221001154853.png)
+Add segue show to next view controller
+![](assets/Pasted%20image%2020221001155006.png)
+![](assets/Pasted%20image%2020221001155139.png)
+![](assets/Pasted%20image%2020221001155209.png)
+![](assets/Pasted%20image%2020221001155413.png)
+![](assets/Pasted%20image%2020221001155500.png)
+
+![](assets/Pasted%20image%2020221001155525.png)
+Delete navigation controller
+![](assets/Pasted%20image%2020221001155626.png)
+![](assets/Pasted%20image%2020221001155704.png)
+![](assets/Pasted%20image%2020221001155737.png)
+![](assets/Pasted%20image%2020221001155911.png)
+![](assets/Pasted%20image%2020221001155927.png)
+
+
+
+
+### Segue to another story board
+Create next story board
+Create cocoa touch class GreenViewController
+Update identitier to GreenViewController
+![](assets/Pasted%20image%2020221001160254.png)
+![](assets/Pasted%20image%2020221001160318.png)
+Grag btn
+![](assets/Pasted%20image%2020221001160400.png)
+![](assets/Pasted%20image%2020221001160438.png)
+another way
+
+![](assets/Pasted%20image%2020221001160745.png)
+
+![](assets/Pasted%20image%2020221001160729.png)
+
+![](assets/Pasted%20image%2020221001160630.png)
+
+
+
+### Tab Bar Controller
+![](assets/Pasted%20image%2020221001160853.png)
+![](assets/Pasted%20image%2020221001160940.png)
+![](assets/Pasted%20image%2020221001161044.png)
+
+
+
+
+### Tab Bar + Navigation Controller
+
+### Split View Controller
+
+### UI Popover Presentation
+
+### Advanced User Interfaces Recap
+
+### Advanced User Interfaces Quiz
