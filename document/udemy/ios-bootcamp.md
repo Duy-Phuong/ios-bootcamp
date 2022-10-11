@@ -691,6 +691,7 @@ Move to property
 ![](assets/Pasted%20image%2020220927222552.png)
 
 ### Segment control
+![](assets/Pasted%20image%2020221010004134.png)
 Add Segment to Main
 ![](assets/Pasted%20image%2020220927223441.png)
 
@@ -759,7 +760,9 @@ Add Segment to Main
 ### Image Views
 Create ImageView and drag to header
 drag to our project
+
 ![](assets/Pasted%20image%2020220927235051.png)
+
 Check copy
 
 ```objectivec
@@ -795,7 +798,8 @@ Check copy
 Or you can
 
 ![](assets/Pasted%20image%2020220927235354.png)
-Content mode: change to aspect fit
+
+Content mode: change to aspect fill
 You can select Clip to bound
 ![](assets/Pasted%20image%2020220927235519.png)
 
@@ -893,6 +897,9 @@ convert to int value
 
 
 ```
+
+![](assets/Pasted%20image%2020221010004657.png)
+
 
 ### UI Switch
 Add new 
@@ -1149,6 +1156,8 @@ Add `- (IBAction)gobackToHome:(UIStoryboardSegue *)sender` in Main
 ![](assets/Pasted%20image%2020220928092835.png)
 
 ### Passing Data
+
+![](assets/Pasted%20image%2020221010005904.png)
 
 ```objectivec
 #import "ViewController.h"
